@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="FLATA" default="compile" basedir=".">
+    <description>
+        A tool for reachability and termination analysis of integer programs.
+    </description>
+
+    <!-- The settings can be overridden in local.properties. -->
+    <property environment="env" />
+    <property name="java.home" value="${env.JAVA_HOME}" />
+
+    <!-- paths -->
+    <property name="base.dir" value="${basedir}" />
+    <property name="sources.dir" value="${base.dir}/src" />
+    <property name="sources.generated.dir" value="${base.dir}/src-gen" />
+    <property name="dist.dir" value="${base.dir}/dist" />
+    <property name="lib.dir" value="${base.dir}/lib" />
+    <property name="run-scripts.dir" value="${base.dir}/scripts" />
+    <property name="build.dir" value="${base.dir}/bin" />
+    
+    <!-- libraries -->
+    <property name="antlr.jar" value="${lib.dir}/antlr-3.3-complete.jar" />
+    <property name="glpk.jar" value="${lib.dir}/glpk-java-4.47.jar" />
+    <property name="nts.jar" value="${lib.dir}/nts.jar" />
+    <property name="prestaf.jar" value="${lib.dir}/prestaf.jar" />
+    <property name="yices.jar" value="${lib.dir}/yicesapijava.jar" />
+
+    <!-- other properties -->
+    <property name="dist.jar" value="${dist.dir}/flata.jar" />
+    <property name="main.class" value="verimag.flata.Main" />
+
+
+    <path id="compile.class.path">
+        <pathelement location="${lib.dir}" />
+        <fileset dir="lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <target name="generate" description="Generates the lexer and parser for relational calculator.">
+        <echo>Generating the lexer and parser for relational calculator ...</echo>
+        <java classname="org.antlr.Tool" failonerror="true" >
+            <!-- <arg value="-fo"/>
+            <arg value="${sources.generated.dir}/verimag/flata/parsers"/> -->
+            <arg value="${sources.dir}/verimag/flata/parsers/Calc.g"/>
+            <arg value="${sources.dir}/verimag/flata/parsers/CalcT.g"/>
+            <classpath>
+                <pathelement location="${antlr.jar}" />
+            </classpath>
+        </java>
+    </target>
+    
+    <target name="compile-base" description="Compiles .java files">
+        <mkdir dir="${build.dir}"  />
+        <mkdir dir="${dist.dir}"   />
+        <javac destdir="${build.dir}" includeantruntime="false" nowarn="false" failonerror="true" >
+            <src path="${sources.dir}" />
+            <!-- <src path="${sources.generated.dir}" /> -->
+            <include name="**/*.java" />
+            <!-- <compilerarg value="-Xlint:all"/> -->
+            <classpath refid="compile.class.path"/>
+            <!-- <classpath>
+                <pathelement location="${antlr.jar}" />
+                <pathelement location="${glpk.jar}" />
+                <pathelement location="${nts.jar}" />
+                <pathelement location="${prestaf.jar}" />
+                <pathelement location="${yices.jar}" />
+            </classpath> -->
+        </javac>
+    </target>
+
+    <target name="copy-scripts" >
+        <mkdir dir="${dist.dir}"   />
+        <copy todir="${dist.dir}">
+            <fileset dir="${run-scripts.dir}"/>
+        </copy>
+        <chmod file="${dist.dir}/*.sh" perm="a+x" type="both" />
+
+    </target>
+
+    <target name="compile" depends="compile-base,copy-scripts" description="Compiles .java files and creates a .jar file">
+        <jar destfile="${dist.jar}" >
+            <fileset dir="${build.dir}" includes="**/*.class" />
+        </jar>
+        <copy todir="${dist.dir}/lib">
+            <fileset dir="${lib.dir}"/>
+        </copy>
+    </target>
+    
+    <target name="standalone" depends="compile-base,copy-scripts" description="Compiles .java files and creates a standalone .jar file">
+        <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask">
+            <classpath>
+                <pathelement location="${lib.dir}/jarjar-1.3.jar" />
+            </classpath>
+        </taskdef>
+        <jarjar destfile="${dist.jar}" >
+            <fileset dir="${build.dir}" includes="**/*.class" />
+            <zipfileset src="${antlr.jar}" />
+            <zipfileset src="${glpk.jar}" />
+            <zipfileset src="${nts.jar}" />
+            <zipfileset src="${prestaf.jar}" />
+            <zipfileset src="${yices.jar}" />
+        </jarjar>
+    </target>
+
+
+    <target name="clean" description="cleans up">
+        <delete dir="${build.dir}" includeemptydirs="yes" quiet="yes" failonerror="no" />
+        <delete dir="${dist.dir}" includeemptydirs="yes" quiet="yes" failonerror="no" />
+        <!-- <delete dir="${sources.generated.dir}" includeemptydirs="yes" quiet="yes" failonerror="no" /> -->
+    </target>
+
+</project>
