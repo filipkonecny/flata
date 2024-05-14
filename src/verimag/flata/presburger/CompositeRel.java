@@ -3,6 +3,8 @@ package verimag.flata.presburger;
 import java.io.StringWriter;
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import nts.parser.*;
 import verimag.flata.acceleration.delta.DeltaClosure;
 import verimag.flata.common.*;
@@ -1585,11 +1587,25 @@ public class CompositeRel extends RelationCommon implements Label {
 		return false;
 	}
 
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt) {
+		return toJSMTAsConj(fjsmt, null, null);
+	}
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		LinkedList<BooleanFormula> formulas = new LinkedList<>();
+
+		formulas.add(fjsmt.getBfm().makeTrue());
+		for (Relation r : this.rels) {
+			formulas.add(r.toJSMTAsConj(fjsmt, s_u, s_p));
+		}
+
+		return fjsmt.getBfm().and(formulas);
+	}
+
+	// TODO: remove
 	@Override
 	public void toSBYicesAsConj(IndentedWriter iw) {
 		toSBYicesAsConj(iw, null, null);
 	}
-
 	public void toSBYicesAsConj(IndentedWriter iw, String s_u, String s_p) {
 		iw.writeln("(and");
 		iw.indentInc();
@@ -1602,6 +1618,15 @@ public class CompositeRel extends RelationCommon implements Label {
 		iw.writeln(")");
 	}
 	
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate) {
+		LinkedList<BooleanFormula> formulas = new LinkedList<>();
+		for (Relation r : this.rels) {
+			formulas.addAll(r.toJSMTList(fjsmt, negate));
+		}
+		return formulas;
+	}
+
+	// TODO: remove
 	public void toSBYicesList(IndentedWriter iw, boolean negate) {
 		for (Relation r : this.rels)
 			r.toSBYicesList(iw, negate);
@@ -1891,61 +1916,79 @@ public class CompositeRel extends RelationCommon implements Label {
 	
 	public static Answer subsumed(Collection<String> vars, CompositeRel r, Collection<CompositeRel> rels) {
 		
-		if (rels.isEmpty())
+		if (rels.isEmpty()) {
 			return Answer.FALSE;
-		
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-
-		iw.writeln("(reset)");
-
-		// define
-		CR.yicesDefineVarsS(iw, vars);
-
-		iw.writeln("(assert");
-		iw.indentInc();
-
-		// other \subseteq this
-		iw.writeln("(and");
-		iw.indentInc();
-		r.toSBYicesList(iw, false); // not negated
-
-		for (CompositeRel rr : rels) {
-			iw.writeln("(or");
-			iw.indentInc();
-			rr.toSBYicesList(iw, true); // negated
-	
-			iw.indentDec();
-			iw.writeln(")"); // or
 		}
-		iw.indentDec();
-		iw.writeln(")"); // and
 
-		iw.indentDec();
-		iw.writeln(")"); // assert
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
 
-		iw.writeln("(check)");
+		// Begin AND
+		LinkedList<BooleanFormula> formulasAND = r.toJSMTList(fjsmt, false);
+		
+		for (CompositeRel rr : rels) {
+			// Begin OR
+			LinkedList<BooleanFormula> formulasOR = rr.toJSMTList(fjsmt, true);
+			// End OR
+			formulasAND.add(fjsmt.getBfm().or(formulasOR));
+		}
+
+		BooleanFormula formula = fjsmt.getBfm().and(formulasAND);
+
+		return fjsmt.isSatisfiable(formula, true);
+
+		// TODO: remove
+		// StringWriter sw = new StringWriter();
+		// IndentedWriter iw = new IndentedWriter(sw);
+
+		// iw.writeln("(reset)");
+
+		// // define
+		// CR.yicesDefineVarsS(iw, vars);
+
+		// iw.writeln("(assert");
+		// iw.indentInc();
+
+		// // other \subseteq this
+		// iw.writeln("(and");
+		// iw.indentInc();
+		// r.toSBYicesList(iw, false); // not negated
+
+		// for (CompositeRel rr : rels) {
+		// 	iw.writeln("(or");
+		// 	iw.indentInc();
+		// 	rr.toSBYicesList(iw, true); // negated
+	
+		// 	iw.indentDec();
+		// 	iw.writeln(")"); // or
+		// }
+		// iw.indentDec();
+		// iw.writeln(")"); // and
+
+		// iw.indentDec();
+		// iw.writeln(")"); // assert
+
+		// iw.writeln("(check)");
 
 		
-		//System.out.println("INCL LHS: "+r);
-		//System.out.print("INCL RHS: ");
-		//for (CompositeRel rr : rels) {
-		//	System.out.println("  "+rr);
-		//}
-		//System.out.println("YICES INPUT: "+sw);
-		//System.out.println("CALLING YICES");
+		// //System.out.println("INCL LHS: "+r);
+		// //System.out.print("INCL RHS: ");
+		// //for (CompositeRel rr : rels) {
+		// //	System.out.println("  "+rr);
+		// //}
+		// //System.out.println("YICES INPUT: "+sw);
+		// //System.out.println("CALLING YICES");
 		
 		
-		StringBuffer yc = new StringBuffer();
-		YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
+		// StringBuffer yc = new StringBuffer();
+		// YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
 		
 		
-		//System.out.println("YICES RETURNED");
-		//System.out.println("YICES OUTPUT: "+ya);
+		// //System.out.println("YICES RETURNED");
+		// //System.out.println("YICES OUTPUT: "+ya);
 		
 
-		// unsat implies that relation is included
-		return Answer.createFromYicesUnsat(ya);
+		// // unsat implies that relation is included
+		// return Answer.createFromYicesUnsat(ya);
 		
 	}
 	

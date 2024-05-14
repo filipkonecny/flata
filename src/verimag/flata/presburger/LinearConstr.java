@@ -5,8 +5,11 @@ import java.util.*;
 import nts.parser.*;
 
 import org.gnu.glpk.*;
+import org.sosy_lab.java_smt.api.BooleanFormula;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
 
 import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 
 /**
  * 
@@ -383,6 +386,26 @@ public class LinearConstr extends HashMap<Variable, LinearTerm> implements Const
 		}
 	}
 
+	public IntegerFormula toJSMT(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		Collection<LinearTerm> values = this.values();
+		Iterator<LinearTerm> iter = values.iterator();
+		int size = values.size();
+
+		if (size == 1) {
+			return iter.next().toJSMT(fjsmt, s_u, s_p);
+		}
+
+		LinkedList<IntegerFormula> terms = new LinkedList<IntegerFormula>();
+
+		while (iter.hasNext()) {
+			LinearTerm t = iter.next();
+			terms.add(t.toJSMT(fjsmt, s_u, s_p));
+		}
+
+		return fjsmt.getIfm().sum(terms);
+	}
+
+	// TODO: remove, convert
 	public StringBuffer toSBYices(String s_u, String s_p) {
 		StringBuffer sb = new StringBuffer();
 		

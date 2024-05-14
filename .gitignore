@@ -1,0 +1,7 @@
+/dist
+/bin
+/lib
+/flataProvidedBenchmarks
+/.vcode
+tmp.txt
+/initialTests

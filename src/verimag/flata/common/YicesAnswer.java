@@ -1,5 +1,5 @@
 package verimag.flata.common;
-
+// TODO: remove file
 /**
  * codes of Yices' answers
  */

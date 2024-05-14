@@ -3,9 +3,12 @@ package verimag.flata.automata.ca;
 import java.io.StringWriter;
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import verimag.flata.automata.*;
 import verimag.flata.common.Answer;
 import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 import verimag.flata.common.Label;
 import verimag.flata.common.Parameters;
@@ -557,6 +560,21 @@ public class CATransition extends BaseArc implements java.lang.Comparable<CATran
 		return sb;
 	}
 
+	public static BooleanFormula toJSMTListPart(FlataJavaSMT fjsmt, Collection<CATransition> col) {
+		if (col.size() == 1) {
+			return col.iterator().next().labAsRel().toJSMTAsConj(fjsmt);
+		} else {
+			// Begin OR
+			LinkedList<BooleanFormula> formulasOR = new LinkedList<>();
+			for (CATransition t : col) {
+				formulasOR.add(t.labAsRel().toJSMTAsConj(fjsmt));
+			}
+			// End OR
+			return fjsmt.getBfm().or(formulasOR);
+		}
+	}
+
+	// TODO: remove
 	public static void toSBYicesListPart(Collection<CATransition> col, IndentedWriter iw) {
 
 		if (col.size() == 1) {
@@ -745,7 +763,7 @@ public class CATransition extends BaseArc implements java.lang.Comparable<CATran
 
 	// not contradictory is not the same as satisfiable
 	// not satisfiable is not the same as contradictory
-	// (since Yices may say unknown)
+	// (since solver may say unknown)
 	public boolean isContradictory() { 
 		return labAsRel().contradictory();
 	}
@@ -944,57 +962,78 @@ public class CATransition extends BaseArc implements java.lang.Comparable<CATran
 		return ret;
 	}
 	
-	
 	public static Answer inclusionCheck(Collection<CATransition> tOld, CATransition tNew) {
 
-		if (tOld.size() == 0)
+		if (tOld.size() == 0) {
 			return Answer.createAnswer(false);
-		
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-
-		iw.writeln("(reset)");
-
-		// define
-		Set<Variable> vars = new HashSet<Variable>();
-		tNew.labAsRel().refVars(vars);
-		for (CATransition t : tOld) {
-			t.labAsRel().refVars(vars);
 		}
-		CR.yicesDefineVars(iw, vars);
 
-		iw.writeln("(assert");
-		iw.indentInc();
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
 		
-		iw.writeln("(and");
-		iw.indentInc();
-		
+		// Begin AND
 		LinearRel lrnew = tNew.labAsRel().toLinearRel();
-		lrnew.toSBYicesAsConj(iw);
-		
-		iw.writeln("(not (or");
-		iw.indentInc();
-		
+		BooleanFormula formulaAND = lrnew.toJSMTAsConj(fjsmt);
+
+		// Begin NOR
+		LinkedList<BooleanFormula> formulasNOR = new LinkedList<>();
 		for (CATransition t : tOld) {
 			LinearRel lr = t.labAsRel().toLinearRel();
-			lr.toSBYicesAsConj(iw);
+			formulasNOR.add(lr.toJSMTAsConj(fjsmt));
 		}
+		// End NOR
+		BooleanFormula formulaNOR = fjsmt.getBfm().not(fjsmt.getBfm().or(formulasNOR));
 		
-		iw.writeln("))"); // not or
-		iw.indentDec();
+		// End AND
+		BooleanFormula formula = fjsmt.getBfm().and(formulaAND, formulaNOR);
+
+		return fjsmt.isSatisfiable(formula);
+
+		// TODO: remove
+		// StringWriter sw = new StringWriter();
+		// IndentedWriter iw = new IndentedWriter(sw);
+
+		// iw.writeln("(reset)");
+
+		// // define
+		// Set<Variable> vars = new HashSet<Variable>();
+		// tNew.labAsRel().refVars(vars);
+		// for (CATransition t : tOld) {
+		// 	t.labAsRel().refVars(vars);
+		// }
+		// CR.yicesDefineVars(iw, vars);
+
+		// iw.writeln("(assert");
+		// iw.indentInc();
 		
-		iw.writeln(")"); // and
-		iw.indentDec();
+		// iw.writeln("(and");
+		// iw.indentInc();
 		
-		iw.indentDec();
-		iw.writeln(")"); // assert
+		// LinearRel lrnew = tNew.labAsRel().toLinearRel();
+		// lrnew.toSBYicesAsConj(iw);
+		
+		// iw.writeln("(not (or");
+		// iw.indentInc();
+		
+		// for (CATransition t : tOld) {
+		// 	LinearRel lr = t.labAsRel().toLinearRel();
+		// 	lr.toSBYicesAsConj(iw);
+		// }
+		
+		// iw.writeln("))"); // not or
+		// iw.indentDec();
+		
+		// iw.writeln(")"); // and
+		// iw.indentDec();
+		
+		// iw.indentDec();
+		// iw.writeln(")"); // assert
 
-		iw.writeln("(check)");
+		// iw.writeln("(check)");
 
-		StringBuffer yc = new StringBuffer();
-		YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
+		// StringBuffer yc = new StringBuffer();
+		// YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
 
-		return Answer.createFromYicesUnsat(ya);
+		// return Answer.createFromYicesUnsat(ya);
 	}
 
 	// split to more accelerable transitions 

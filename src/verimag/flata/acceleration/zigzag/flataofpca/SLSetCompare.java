@@ -1,9 +1,15 @@
 package verimag.flata.acceleration.zigzag.flataofpca;
 
 import java.io.StringWriter;
+import java.util.LinkedList;
+
+import org.sosy_lab.java_smt.api.BooleanFormula;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
 
 import verimag.flata.acceleration.zigzag.*;
+import verimag.flata.common.Answer;
 import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 import verimag.flata.common.YicesAnswer;
 
@@ -14,6 +20,44 @@ public class SLSetCompare {
 
 	private static boolean bb = true;
 	
+	private static BooleanFormula[] toJSMT(FlataJavaSMT fjsmt, LinSet ls, IntegerFormula k, IntegerFormula n, IntegerFormula dummy) {
+		Point base = ls.getBase();
+		Point gen = ls.getGenerator();
+		
+		IntegerFormula a = fjsmt.getIfm().makeNumber(base.getLength());
+		IntegerFormula b = fjsmt.getIfm().makeNumber(base.getWeight());
+		IntegerFormula c = fjsmt.getIfm().makeNumber((gen == null)? 0 : gen.getLength());
+		IntegerFormula d = fjsmt.getIfm().makeNumber((gen == null)? 0 : gen.getWeight());
+
+		IntegerFormula product1 = fjsmt.getIfm().multiply(k, c);
+		IntegerFormula sum1 = fjsmt.getIfm().add(a, product1);
+		BooleanFormula formula1 = fjsmt.getIfm().equal(n, sum1);
+
+		IntegerFormula product2 = fjsmt.getIfm().multiply(k, d);
+		IntegerFormula sum2 = fjsmt.getIfm().add(b, product2);
+		BooleanFormula formula2 = fjsmt.getIfm().lessOrEquals(dummy, sum2);
+
+		return new BooleanFormula[]{formula1, formula2};
+	}
+	private static BooleanFormula toJSMT(FlataJavaSMT fjsmt, SLSet sls, IntegerFormula n, IntegerFormula dummy) {
+		if (sls == null || sls.empty()) {
+			return fjsmt.getBfm().makeTrue();
+		}
+
+		IntegerFormula k = fjsmt.getIfm().makeVariable("k");
+
+		// Begin AND
+		LinkedList<BooleanFormula> formulasAND = new LinkedList<>();
+		for (LinSet ls : sls.getLinearSets()) {
+			BooleanFormula[] formulas = toJSMT(fjsmt, ls, k, n, dummy);
+			formulasAND.add(fjsmt.getBfm().implication(formulas[0], formulas[1]));
+		}
+		// End AND
+		BooleanFormula formulaAND = fjsmt.getBfm().and(formulasAND);
+		return fjsmt.getQfm().forall(fjsmt.getIfm().makeVariable("k"), formulaAND);
+	}
+
+	// TODO: remove
 	private static void toSBYices(IndentedWriter iw, LinSet ls, String k, String n, String dummy) { 		
 		Point base = ls.getBase();
 		Point gen = ls.getGenerator();
@@ -26,6 +70,7 @@ public class SLSetCompare {
 		iw.writeln("(= "+n+" (+ "+a+" (* "+k+" "+c+")))");
 		iw.writeln("(<= "+dummy+" (+ "+b+" (* "+k+" "+d+")))");
 	}
+	// TODO: remove
 	private static void toSBYices(IndentedWriter iw, SLSet sls, String n, String dummy) {
 		
 		if (sls == null || sls.empty()) {
@@ -59,6 +104,12 @@ public class SLSetCompare {
 		iw.writeln(")"); // forall
 		
 	}
+
+	public static BooleanFormula implicationJSMT(FlataJavaSMT fjsmt, SLSet sls1, SLSet sls2, IntegerFormula n, IntegerFormula dummy) {
+		return fjsmt.getBfm().implication(toJSMT(fjsmt, sls1, n, dummy), toJSMT(fjsmt, sls2, n, dummy));
+	}
+
+	// TODO: remove
 	public static void implicationYices(IndentedWriter iw, SLSet sls1, SLSet sls2, String n, String dummy) {
 		iw.writeln("(=> ");
 		iw.indentInc();
@@ -69,6 +120,28 @@ public class SLSetCompare {
 		iw.indentDec();
 		iw.writeln(")"); // =>
 	}
+
+	public static Answer equalJSMT(SLSet sls1, SLSet sls2) {
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
+
+		IntegerFormula n = fjsmt.getIfm().makeVariable("n");
+		IntegerFormula dummy = fjsmt.getIfm().makeVariable("x");
+
+		// Begin AND
+		BooleanFormula geq = fjsmt.getIfm().greaterOrEquals(n, fjsmt.getIfm().makeNumber(1));
+
+		// Begin NAND
+		BooleanFormula impl1 = implicationJSMT(fjsmt, sls1, sls2, n, dummy);
+		BooleanFormula impl2 = implicationJSMT(fjsmt, sls2, sls1, n, dummy);
+
+		// End NAND
+		BooleanFormula nand = fjsmt.getBfm().not(fjsmt.getBfm().and(impl1, impl2));
+
+		// End AND
+		return fjsmt.isSatisfiable(fjsmt.getBfm().and(geq, nand));
+	}
+
+	// TODO: remove
 	public static YicesAnswer equalYices(SLSet sls1, SLSet sls2) {
 		StringWriter sw = new StringWriter();
 		IndentedWriter iw = new IndentedWriter(sw);
@@ -111,7 +184,7 @@ public class SLSetCompare {
 		iw.indentDec();
 		iw.writeln(")"); // assert
 		
-		iw.writeln("(set-evidence! true)");
+		iw.writeln("(set-evidence! true)"); // ?? Why do they need model, its never used??
 		iw.writeln("(check)");
 		
 		StringBuffer sb = sw.getBuffer();

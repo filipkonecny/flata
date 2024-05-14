@@ -5,8 +5,10 @@ package verimag.flata.presburger;
 
 import java.util.Collection;
 
-import verimag.flata.common.CR;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
 
+import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 import nts.parser.*;
 
 
@@ -137,7 +139,33 @@ public class LinearTerm implements java.lang.Comparable<LinearTerm> {
 
 		return sb;
 	}
+
 	// if s_u == null, standard priming is used, otherwise, given suffixes are used
+	public IntegerFormula toJSMT(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		String varName;
+
+		IntegerFormula coeffFormula = fjsmt.getIfm().makeNumber(coeff);
+
+		if (variable == null) {
+			return coeffFormula;
+		} else if (s_u == null) {
+			varName = this.variable.name();
+		} else {
+			if (variable.isPrimed()) {
+				varName = variable.getUnprimedName() + s_p;
+			} else {
+				varName = variable.name() + s_u;
+			}
+		}
+
+		if (this.variable != null) {
+			return fjsmt.getIfm().multiply(coeffFormula, fjsmt.getIfm().makeVariable(varName));
+		} else {
+			return fjsmt.getIfm().multiply(coeffFormula, fjsmt.getIfm().makeNumber(1));
+		}
+	}
+
+	// TODO: remove
 	public StringBuffer toSBYices(String s_u, String s_p) {
 		StringBuffer sb = new StringBuffer();
 		String xx;

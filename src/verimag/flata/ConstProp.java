@@ -21,7 +21,10 @@ public class ConstProp {
 		
 		File inputFile = new File(args[i+0]);
 		
+		// TODO: remove
 		CR.launchYices();
+
+		CR.initFLataJavaSMT();
 		
 		//CA ca = CAs.createAutomaton(inputFile);
 		NTS nts = Main.parseNTS(inputFile);

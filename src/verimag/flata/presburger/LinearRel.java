@@ -6,6 +6,8 @@ import java.util.*;
 import nts.parser.*;
 
 import org.gnu.glpk.*;
+import org.sosy_lab.java_smt.api.BooleanFormula;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
 
 import verimag.flata.common.*;
 
@@ -527,6 +529,36 @@ public class LinearRel extends Relation {
 		return sb;
 	}
 
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt) {
+		return toJSMTList(fjsmt, false, null, null);
+	}
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		return toJSMTList(fjsmt, false, s_u, s_p);
+	}
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate) {
+		return toJSMTList(fjsmt, negate, null, null);
+	}
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p) {
+		LinkedList<BooleanFormula> ret = new LinkedList<BooleanFormula>();
+		
+		if (this.simpleContradiction) {
+			ret.add(fjsmt.getBfm().makeBoolean(false));
+			return ret;
+		}
+
+		IntegerFormula zero = fjsmt.getIfm().makeNumber(0);
+		for (LinearConstr c : linConstraints_inter) {
+			if (negate) { // >
+				ret.add(fjsmt.getIfm().greaterThan(c.toJSMT(fjsmt, s_u, s_p), zero));
+			} else { // <=
+				ret.add(fjsmt.getIfm().lessOrEquals(c.toJSMT(fjsmt, s_u, s_p), zero));
+			}
+		}
+
+		return ret;
+	}
+
+	// TODO: remove
 	public void toSBYicesList(IndentedWriter iw, String s_u, String s_p) {
 		toSBYicesList(iw, false, s_u, s_p);
 	}
@@ -551,6 +583,11 @@ public class LinearRel extends Relation {
 		}
 	}
 
+	public BooleanFormula toJSMTFull() {
+		return toJSMTAsConj(CR.flataJavaSMT);
+	}
+
+	// TODO: remove
 	public StringBuffer toSBYicesFull() {
 		StringWriter sw = new StringWriter();
 		IndentedWriter iw = new IndentedWriter(sw);
@@ -576,6 +613,18 @@ public class LinearRel extends Relation {
 		return sw.getBuffer();
 	}
 	
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt) {
+		return toJSMTAsConj(fjsmt, null, null);
+	}
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		if (this.linConstraints_inter.size() == 0) {
+			return fjsmt.getBfm().makeTrue(); // TODO: check if correct
+		}
+		return fjsmt.getBfm().and(this.toJSMTList(fjsmt, s_u, s_p));
+	}
+
+
+	// TODO: remove
 	public void toSBYicesAsConj(IndentedWriter aIW) {
 		toSBYicesAsConj(aIW, null, null);
 	}
@@ -620,6 +669,7 @@ public class LinearRel extends Relation {
 		return vars;
 	}
 
+	// TODO: convert ???
 	public void exportToYices(String aFilename) {
 
 		try {
@@ -2350,6 +2400,25 @@ new_lr = LinearRel.substituteConstants(aLR);
 		return true;
 	}
 
+	private Answer includesJSMT(LinearRel other) {
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
+
+		// Begin AND
+		LinkedList<BooleanFormula> formulasAND = other.toJSMTList(fjsmt, false);
+
+		// Begin and end OR
+		BooleanFormula formulaOR = fjsmt.getBfm().or(this.toJSMTList(fjsmt, true));
+		
+		formulasAND.add(formulaOR);
+
+		// End AND
+		BooleanFormula formulaAND = fjsmt.getBfm().and(formulasAND);
+
+		// unsat implies that relation is included
+		return fjsmt.isSatisfiable(formulaAND, true);
+	}
+
+	// TODO: remove
 	private Answer includes_yices(LinearRel other) {
 
 		StringWriter sw = new StringWriter();
@@ -2413,7 +2482,8 @@ new_lr = LinearRel.substituteConstants(aLR);
 			if (INCLUSION_GLPK)
 				return includes_glpk(other);
 			else
-				return includes_yices(other);
+				return includesJSMT(other);
+				//return includes_yices(other); // TODO: remove
 		}
 	}
 
@@ -2461,8 +2531,9 @@ new_lr = LinearRel.substituteConstants(aLR);
 			
 		} else {
 			
-			StringBuffer yc = new StringBuffer();
-			Answer a = Answer.createFromYicesSat(CR.isSatisfiableYices(this.toSBYicesFull(), yc));
+			// StringBuffer yc = new StringBuffer(); // TODO: remove
+			Answer a = CR.flataJavaSMT.isSatisfiable(this.toJSMTFull());
+			// Answer a = Answer.createFromYicesSat(CR.isSatisfiableYices(this.toSBYicesFull(), yc)); // TODO: remove
 			if (a.isFalse())
 				this.simpleContradiction = true;
 	

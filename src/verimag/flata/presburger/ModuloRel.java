@@ -3,8 +3,11 @@ package verimag.flata.presburger;
 import java.io.StringWriter;
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import verimag.flata.common.Answer;
 import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 import verimag.flata.common.YicesAnswer;
 
@@ -132,6 +135,30 @@ public class ModuloRel extends Relation {
 		+ ((modConstrs.size() == 0)? "" : ", ") + modConstrs;
 	}
 	
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt) {
+		return toJSMTAsConj(fjsmt, null, null);
+	}
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		int lsize = linConstrs.size();
+		int msize = modConstrs.size();
+
+		if (lsize + msize == 0) {
+			return fjsmt.getBfm().makeTrue();
+		}
+
+		LinkedList<BooleanFormula> formulas = new LinkedList<>();
+		{
+			if (lsize > 0) {
+				formulas.addAll(linConstrs.toJSMTList(fjsmt, s_u, s_p));
+			}
+			if (msize > 0) {
+				formulas.addAll(modConstrs.toJSMTList(fjsmt, s_u, s_p));
+			}
+		}
+		return fjsmt.getBfm().and(formulas);
+	}
+
+	// TODO: remove
 	public void toSBYicesAsConj(IndentedWriter iw, String s_u, String s_p) {
 		int lsize = linConstrs.size();
 		int msize = modConstrs.size();
@@ -152,11 +179,18 @@ public class ModuloRel extends Relation {
 		iw.indentDec();
 		iw.writeln(")");
 	}
-	
 	public void toSBYicesAsConj(IndentedWriter aIW) {
 		toSBYicesAsConj(aIW, null, null);
 	}
 	
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate) {
+		LinkedList<BooleanFormula> formulas = new LinkedList<>();
+		formulas.addAll(this.linConstrs.toJSMTList(fjsmt, negate));
+		formulas.addAll(this.modConstrs.toJSMTList(fjsmt, negate));
+		return formulas;
+	}
+
+	// TODO: remove
 	public void toSBYicesList(IndentedWriter iw, boolean negate) {
 		this.linConstrs.toSBYicesList(iw, negate);
 		this.modConstrs.toSBYicesList(iw, negate);
@@ -711,6 +745,67 @@ public class ModuloRel extends Relation {
 		}
 	}
 
+	public Answer includesJSMT(ModuloRel other) {
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
+
+		// Begin AND
+		LinkedList<BooleanFormula> formulasAND = other.linConstrs.toJSMTList(fjsmt, false);
+		formulasAND.addAll(other.modConstrs.toJSMTList(fjsmt, false));
+
+		// Begin OR
+		LinkedList<BooleanFormula> formulasOR = this.linConstrs.toJSMTList(fjsmt, false);
+		formulasOR.addAll(this.modConstrs.toJSMTList(fjsmt, true));
+
+		// End OR
+		formulasAND.add(fjsmt.getBfm().or(formulasOR));
+
+		// End AND
+		BooleanFormula formula = fjsmt.getBfm().and(formulasAND);
+
+		return fjsmt.isSatisfiable(formula, true);
+	}
+
+	// TODO: remove
+	public Answer includes_yices(ModuloRel other) {
+		StringWriter sw = new StringWriter();
+		IndentedWriter iw = new IndentedWriter(sw);
+
+		// define
+		Set<Variable> vars = this.variables();
+		other.refVars(vars);
+		CR.yicesDefineVars(iw, vars);
+
+		iw.writeln("(assert");
+		iw.indentInc();
+
+		// other \subseteq this
+		iw.writeln("(and");
+		iw.indentInc();
+		
+		other.linConstrs.toSBYicesList(iw, false); // not negated
+		other.modConstrs.toSBYicesList(iw, false); // not negated
+
+		iw.writeln("(or");
+		iw.indentInc();
+		this.linConstrs.toSBYicesList(iw, true); // negated
+		this.modConstrs.toSBYicesList(iw, true); // negated
+
+		iw.indentDec();
+		iw.writeln(")"); // or
+		iw.indentDec();
+		iw.writeln(")"); // and
+
+		iw.indentDec();
+		iw.writeln(")"); // assert
+
+		iw.writeln("(check)");
+
+		StringBuffer yc = new StringBuffer();
+		YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
+
+		return Answer.createFromYicesUnsat(ya);
+	}
+
 	public Answer includes(Relation otherRel) {
 		if (!(otherRel instanceof ModuloRel)) {
 
@@ -727,48 +822,8 @@ public class ModuloRel extends Relation {
 				}
 			}
 
-			StringWriter sw = new StringWriter();
-			IndentedWriter iw = new IndentedWriter(sw);
-
-			iw.writeln("(reset)");
-
-			// define
-			Set<Variable> vars = this.variables();
-			other.refVars(vars);
-			CR.yicesDefineVars(iw, vars);
-
-			iw.writeln("(assert");
-			iw.indentInc();
-
-			// other \subseteq this
-			iw.writeln("(and");
-			iw.indentInc();
-			
-			other.linConstrs.toSBYicesList(iw, false); // not negated
-			other.modConstrs.toSBYicesList(iw, false); // not negated
-
-			iw.writeln("(or");
-			iw.indentInc();
-			this.linConstrs.toSBYicesList(iw, true); // negated
-			this.modConstrs.toSBYicesList(iw, true); // negated
-
-			iw.indentDec();
-			iw.writeln(")"); // or
-			iw.indentDec();
-			iw.writeln(")"); // and
-
-			iw.indentDec();
-			iw.writeln(")"); // assert
-
-			iw.writeln("(check)");
-
-			StringBuffer yc = new StringBuffer();
-			YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
-
-			//if (ya.isKnown())
-			//	System.err.println("known answer for modulo: \n"+this+"\n"+otherRel);
-			
-			return Answer.createFromYicesUnsat(ya);
+			return includesJSMT(other);
+			// return includes_yices(other); // TODO: remove
 		}
 	}
 
@@ -835,8 +890,11 @@ public class ModuloRel extends Relation {
 		if (modConstrs.simpleContradiction() || linConstrs.simpleContradiction())
 			return Answer.FALSE;
 		
-		StringBuffer yc = new StringBuffer();
-		return Answer.createFromYicesSat(CR.isSatisfiableYices(this.toSBYicesFull(), yc));
+		StringBuffer yc = new StringBuffer(); // TODO: remove
+
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
+		return fjsmt.isSatisfiable(this.toJSMTFull());
+		// return Answer.createFromYicesSat(CR.isSatisfiableYices(this.toSBYicesFull(), yc)); // TODO: remove
 	}
 
 	public DBRel toDBRel() {
@@ -875,6 +933,16 @@ public class ModuloRel extends Relation {
 //			return this.copy();
 	}
 
+	public BooleanFormula toJSMTFull() {
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
+
+		LinkedList<BooleanFormula> formulas = this.linConstrs.toJSMTList(fjsmt);
+		formulas.addAll(this.modConstrs.toJSMTList(fjsmt));
+
+		return fjsmt.getBfm().and(formulas);
+	}
+
+	// TODO: remove
 	public StringBuffer toSBYicesFull() {
 		StringWriter sw = new StringWriter();
 		IndentedWriter iw = new IndentedWriter(sw);

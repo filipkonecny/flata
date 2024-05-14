@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<project name="FLATA" default="compile" basedir=".">
+<project name="FLATA" default="compile" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
     <description>
         A tool for reachability and termination analysis of integer programs.
     </description>
+
+
+
+     <!-- Initialize Ivy and configure it to use the SoSy-Lab repository -->
+    <target name="init-ivy" description="Initialize Ivy and load settings">
+        <ivy:settings url="https://www.sosy-lab.org/ivy/ivysettings.xml"/>
+    </target>
+
+    <!-- Resolve dependencies with Ivy -->
+    <target name="resolve-dependencies" depends="init-ivy" description="Resolve project dependencies using Ivy">
+        <ivy:resolve />
+        <ivy:retrieve pattern="${lib.dir}/[artifact](-[classifier]).[ext]" />
+    </target>
+
 
     <!-- The settings can be overridden in local.properties. -->
     <property environment="env" />
@@ -50,7 +64,7 @@
         </java>
     </target>
     
-    <target name="compile-base" description="Compiles .java files">
+    <target name="compile-base" depends="resolve-dependencies" description="Compiles .java files">
         <mkdir dir="${build.dir}"  />
         <mkdir dir="${dist.dir}"   />
         <javac destdir="${build.dir}" includeantruntime="false" nowarn="false" failonerror="true" >
@@ -77,7 +91,7 @@
         <chmod file="${dist.dir}/*.sh" perm="a+x" type="both" />
 
     </target>
-
+    
     <target name="compile" depends="compile-base,copy-scripts" description="Compiles .java files and creates a .jar file">
         <jar destfile="${dist.jar}" >
             <fileset dir="${build.dir}" includes="**/*.class" />
@@ -102,7 +116,6 @@
             <zipfileset src="${yices.jar}" />
         </jarjar>
     </target>
-
 
     <target name="clean" description="cleans up">
         <delete dir="${build.dir}" includeemptydirs="yes" quiet="yes" failonerror="no" />

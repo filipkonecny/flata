@@ -411,7 +411,8 @@ public class BackEnd implements IAcceleration {
 	
 	public static boolean initActions() {
 		try {
-			CR.launchYices();
+			CR.launchYices(); // TODO: remove
+			CR.initFLataJavaSMT();
 			CR.launchGLPK();
 		} catch (UnsatisfiedLinkError e) {
 			return false;

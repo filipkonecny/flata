@@ -12,12 +12,17 @@ public class Calculator {
 		initActions(true);
 	}
 	protected static void initActions(boolean glpk) {
+		// TODO: remove
 		CR.launchYices();
+
+		CR.initFLataJavaSMT();
 		if (glpk)
 			CR.launchGLPK();
 		
 		Parameters.initActions();
 	}
+
+	// TODO: remove
 	protected static void finalActions() {
 		CR.terminateYices();
 		//Parameters.finalActions();

@@ -18,12 +18,16 @@ import yices.*;
  * members.
  */
 public class CR {
+
+	public static FlataJavaSMT flataJavaSMT;
+
 	public static boolean RELEASE = true;
 	
 	public static boolean NO_POSTPARSING = false;
 	
 	public static String TRANS_ID_NAME = "id";
 	
+	// TODO: remove
 	private static boolean yicesLite = false;
 	
 	public static String yicesCommand;
@@ -40,6 +44,7 @@ public class CR {
 	public static String SUF_ARMC = ".armc";
 	public static String SUF_NTS = ".nts";
 	
+	// TODO: remove
 	static {
 		if (yicesTypeCheck)
 			yicesCommand = "yices -tc";
@@ -74,6 +79,7 @@ public class CR {
 		//clParameters = Parameters.getParameters();
 	}
 	
+	// TODO: remove
 	/**
 	 * Yices' standard output stream
 	 */
@@ -87,6 +93,7 @@ public class CR {
 	public static final int eOUT_FAST=0x02;
 	public static final int eOUT_ARMC=0x04;
 
+	// TODO: remove
 	/**
 	 * converts the specified code of a Yices' answer to the corresponding string ('sat', 'unsat' or 'unknown')
 	 * @param aAnswerCode the code of a Yices' answer
@@ -105,6 +112,7 @@ public class CR {
 		}
 	}
 	
+	// TODO: remove
 	/**
 	 * reads from Yices' standard output until it reaches 'sat', 'unsat' or 'unknown' answer 
 	 * and returns the answer. The text from the standard output which follows that answer 
@@ -126,6 +134,8 @@ public class CR {
 		
 		return ret;
 	}
+
+	// TODO: remove
 	private static YicesAnswer getResultFromYicesStreamN(StringBuffer aYicesCore) {
 		
 		String str=null;
@@ -173,7 +183,7 @@ public class CR {
 		}
 	}
 	
-
+	// TODO: remove
 	private static YicesAnswer getResultFromYicesStreamO(StringBuffer aYicesCore) {
 		String str=null;
 		try {
@@ -213,7 +223,7 @@ public class CR {
 			throw new RuntimeException("Unexpected Yices' answer.");
 	}
 
-	
+	// TODO: remove
 	public static StringBuffer prepareYicesFormula(StringBuffer aDeclarations, StringBuffer aAssertContent, boolean aShowEvidence) {
 		return prepareYicesFormula(aDeclarations, aAssertContent, new StringBuffer(), aShowEvidence);
 	}
@@ -229,12 +239,15 @@ public class CR {
 		formula.append("(check)"+CR.NEWLINE);
 		return formula;
 	}
+
+	// TODO: remove
 	public static void prepareYicesDeclaration(Collection<String> aVarNames, IndentedWriter iw) {
 		for (String varName : aVarNames) {
 			iw.writeln("(define "+CR.yicesVarName(varName)+"::int)\n");
 		}
 	}
 	
+	// TODO: remove
 	/**
 	 * Checks with Yices if the specified formula is satisfiable
 	 * @param aSB this parameter should contain 'reset', 'define', 'assert' and 'check' commands for Yices
@@ -247,6 +260,7 @@ public class CR {
 	public static long timeIsSatYices = 0;
 		
 	public static int yices_calls = 0;
+	// TODO: remove
 	public static YicesAnswer isSatisfiableYices(StringBuffer aSB, StringBuffer aYicesCore) {
 		yices_calls ++;
 		
@@ -277,6 +291,7 @@ public class CR {
 	public static long yltimemkc = 0;
 	public static long yltimedelc = 0;
 	public static long yltimeread = 0;
+	// TODO: remove
 	private static YicesAnswer isSatisfiableYicesN(StringBuffer aSB, StringBuffer aYicesCore) {
 		
 		String str = aSB.toString();
@@ -301,6 +316,8 @@ public class CR {
 		return ret;
 		
 	}
+
+	// TODO: remove
 	private static YicesAnswer isSatisfiableYicesO(StringBuffer aSB, StringBuffer aYicesCore) {
 
 		try {
@@ -337,7 +354,8 @@ public class CR {
 			return null;
 		}
 	}
-	
+
+	// TODO: remove
 	public static Map<String, String> parseYicesCore(StringBuffer yicesCore) {
 		Map<String, String> coreValues = new HashMap<String, String>();
 	
@@ -439,7 +457,12 @@ public class CR {
 		System.loadLibrary("glpk_java");
 		GLPK.glp_term_out(GLPK.GLP_OFF);
 	}
+
+	public static void initFLataJavaSMT() {
+		flataJavaSMT = new FlataJavaSMT();
+	}
 	
+	// TODO: remove
 	public static void launchYices() {
 		try {
 		if (yicesLite)
@@ -451,6 +474,7 @@ public class CR {
 			System.exit(-1);
 		}
 	}
+	// TODO: remove
 	public static void terminateYices() {
 		if (yicesLite)
 			terminateYicesN();
@@ -458,12 +482,13 @@ public class CR {
 			terminateYicesO();		
 	}
 	
-	
+	// TODO: remove
 	//public static String yicesPath = "/home/ikonecny/flata/lib/yices";
 	//private static String yicesCommand = "./extTools/yices.exe";
 	private static java.lang.Runtime runtime;
 	private static java.lang.Process process;
 	
+	// TODO: remove
 	private static void launchYicesO() {
 		runtime = java.lang.Runtime.getRuntime();
 		try {
@@ -500,6 +525,7 @@ public class CR {
 			System.exit(-1);
 		}		
 	}
+	// TODO: remove
 	private static void terminateYicesO() {
 		try {
 			CR.yicesStdoutReader.close();
@@ -514,6 +540,7 @@ public class CR {
 		process.destroy();
 	}
 	
+	// TODO: remove
 	private static YicesLite yl;
 	public static String yicesOut = "YicesOut.txt";
 	public static String yicesLog = "yicesLog.txt";
@@ -536,6 +563,7 @@ public class CR {
 	    	System.exit(-1);
 	    }
 	}
+	// TODO: remove
 	private static void terminateYicesN() {
 		//yl.yicesl_del_context(yices_ctx);
 		
@@ -588,26 +616,32 @@ public class CR {
     }
 	}
 	
+	// TODO: remove
 	public static void yicesDefineVarsS(IndentedWriter iw, Collection<String> vars) {
 		for (String v : vars)
 			iw.writeln(CR.yicesDefineVar(v));
 	}
+	// TODO: remove
 	public static void yicesDefineVars(IndentedWriter iw, Set<Variable> vars) {
 		for (Variable v : vars)
 			iw.writeln(CR.yicesDefineVar(v.name()));
 	}
+	// TODO: remove
 	public static void yicesDefineVarNames(IndentedWriter iw, Collection<String> vars) {
 		for (String v : vars)
 			iw.writeln(CR.yicesDefineVar(v));
 	}
 	
+	// TODO: remove
 	private static String yicesVarPref = "V_";
 	public static String yicesVarName(String aVarName) {
 		return yicesVarPref+aVarName;
 	}
+	// TODO: remove
 	public static String yicesVarUnname(String aVarName) {
 		return aVarName.substring(yicesVarPref.length());
 	}
+	// TODO: remove
 	public static StringBuffer yicesDefineVar(String aVarName) {
 		return new StringBuffer("(define "+yicesVarName(aVarName)+"::int)");
 	}
@@ -705,10 +739,12 @@ public class CR {
 		return sb;
 	}
 	
+	// TODO: remove
 	public static void yicesAndStart(IndentedWriter iw) {
 		iw.writeln("(and");
 		iw.indentInc();
 	}
+	// TODO: remove
 	public static void yicesAndEnd(IndentedWriter iw) {
 		iw.indentDec();
 		iw.writeln(")");

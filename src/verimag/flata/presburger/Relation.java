@@ -2,9 +2,12 @@ package verimag.flata.presburger;
 
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import verimag.flata.acceleration.zigzag.flataofpca.ZigzagClosure;
 import verimag.flata.acceleration.delta.DeltaClosure;
 import verimag.flata.common.Answer;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 
 public abstract class Relation extends RelationCommon {
@@ -128,6 +131,11 @@ public abstract class Relation extends RelationCommon {
 	public abstract ModuloRel toModuloRel();
 //	public abstract ModExistsRel toModExists();
 	
+	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt);
+	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p);
+	public abstract LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate);
+
+	// TODO: remove
 	// produces a conjunction of constraints
 	public abstract void toSBYicesAsConj(IndentedWriter aIW);
 	// same as above, just no primes are used:
@@ -403,6 +411,7 @@ public abstract class Relation extends RelationCommon {
 		return ret;
 	}
 	
+	// TODO: convert
 	public static void toSBYicesAsDisj(Collection<Relation> col, IndentedWriter iw) {
 
 		if (col.size() == 1) {

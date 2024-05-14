@@ -2,12 +2,17 @@ package verimag.flata.presburger;
 
 import java.util.Collection;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import verimag.flata.common.Answer;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 import verimag.flata.presburger.Relation.RelType;
 
 public abstract class RelationCommon {
 
+	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt);
+	// TODO: remove
 	public abstract void toSBYicesAsConj(IndentedWriter iw);
 	public abstract void update(ConstProps cps);
 	public abstract boolean simpleContradiction();

@@ -1069,7 +1069,7 @@ public class CA extends BaseGraph {
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
 
-	
+	// TODO: convert, remove, never used??
 	private static YicesAnswer isIncluded(int inx, CATransition[] tt, BitSet bs, Collection<String> vars) {
 
 		StringWriter sw = new StringWriter();

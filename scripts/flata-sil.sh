@@ -1,3 +1,3 @@
 #!/bin/bash
-export CLASSPATH=./flata.jar:./lib/nts.jar:./lib/antlr-3.3-complete.jar
+export CLASSPATH=./flata.jar:./lib/*:$CLASSPATH
 java verimag.sil.Main $1

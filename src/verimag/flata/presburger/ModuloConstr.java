@@ -2,6 +2,10 @@ package verimag.flata.presburger;
 
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
+
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 
 
@@ -151,7 +155,54 @@ public class ModuloConstr implements Constr {
 	public String toString() {
 		return ""+modulus+"|"+LinearTerm.toSBtermList(constr.values());
 	}
+
+	// TODO: check if this change is what makes it work, to return list, instead of conjunction (AND)
+	public LinkedList<BooleanFormula> toJSMTListPart(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p) {
+		IntegerFormula param = fjsmt.getIfm().makeVariable(param_name);
+		IntegerFormula modulusNR = fjsmt.getIfm().makeNumber(modulus);
+		IntegerFormula product =  fjsmt.getIfm().multiply(modulusNR, param);
+
+
+		IntegerFormula constraint = constr.toJSMT(fjsmt, s_u, s_p);
+		
+		LinkedList<BooleanFormula> formulas = new LinkedList<>();
+
+		// TODO: circumvent use of QFM with modularCongruence
+		// ?? How do I do that ??
+		// * Manually construct a formula equivalent to exists???
+		if (!negate) {
+			BooleanFormula formulaMod = fjsmt.getIfm().modularCongruence(constraint, fjsmt.getIfm().makeNumber(0), modulus);
+			formulas.add(formulaMod);
+			// System.out.println("MODULO1: \n" + formulaMod.toString()); // TODO: remove
+		} else {
+			for (int i = 1; i < modulus; i++) {
+				BooleanFormula formulaMod = fjsmt.getIfm().modularCongruence(constraint, fjsmt.getIfm().makeNumber(i), modulus);
+				formulas.add(formulaMod);
+				// System.out.println("MODULO2: \n" + formulaMod.toString()); // TODO: remove
+			}
+		}
+
+		// Old version using quantifiers
+		// TODO: remove
+		// if (!negate) {
+		// 	BooleanFormula equality = fjsmt.getIfm().equal(constraint, product);
+		// 	System.out.println("MOD-EQUALITY1 :\n" + equality.toString()); // TODO: remove
+		// 	formulas.add(fjsmt.getQfm().exists(param, equality));
+		// } else {
+		// 	for (int i = 1; i < modulus; i++) {
+		// 		IntegerFormula sum = fjsmt.getIfm().add(product, fjsmt.getIfm().makeNumber(i));
+		// 		BooleanFormula equality = fjsmt.getIfm().equal(constraint, sum);
+		// 		System.out.println("MOD-EQUALITY2 :\n" + equality.toString()); // TODO: remove
+		// 		formulas.add(fjsmt.getQfm().exists(param, equality));
+		// 	}
+		// }
+
+		// System.out.println("MODCONSTR: \n" + formulas.toString()); // TODO: remove
+
+		return formulas;
+	}
 	
+	// TODO: remove
 	public void toSBYicesListPart(IndentedWriter iw, boolean negate, String s_u, String s_p) {
 		
 		if (!negate) {

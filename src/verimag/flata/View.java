@@ -17,7 +17,10 @@ public class View {
 
 	public static void main(String[] args) throws IOException {
 		
+		// TODO: remove
 		CR.launchYices();
+
+		CR.initFLataJavaSMT();
 		
 		//quick fix
 		CompositeRel.onlyLin = true;
@@ -37,6 +40,7 @@ public class View {
 		
 		view(ca, args[1], printT);
 		
+		// TODO: remove
 		CR.terminateYices();
 		
 	}	
