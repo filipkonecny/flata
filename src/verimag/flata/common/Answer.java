@@ -31,6 +31,8 @@ public enum Answer {
 			return FALSE;
 		return DONTKNOW;
 	}
+
+	// TODO: remove
 	public static Answer createFromYicesSat(YicesAnswer satisfiableYices) {
 		switch(satisfiableYices) {
 		case eYicesSAT: return Answer.TRUE;

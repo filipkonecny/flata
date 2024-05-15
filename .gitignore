@@ -5,3 +5,5 @@
 /.vcode
 tmp.txt
 /initialTests
+/.vscode
+yices

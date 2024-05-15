@@ -1312,14 +1312,14 @@ public class DBM {
 				}
 			}
 
-			IntegerFormula lt1Formula = lt1.toJSMT(fjsmt, s_u, s_p);
-			IntegerFormula lt2Formula = lt2.toJSMT(fjsmt, s_u, s_p);
-
 			if (lt1 != null && lt2 != null) {
+				IntegerFormula lt1Formula = lt1.toJSMT(fjsmt, s_u, s_p);
+				IntegerFormula lt2Formula = lt2.toJSMT(fjsmt, s_u, s_p);
+
 				IntegerFormula sum = fjsmt.getIfm().add(lt1Formula, lt2Formula);
 				return comparisonFunction.apply(sum, bndFormula);
 			} else {
-				IntegerFormula formula = (lt1 == null) ? lt1Formula : lt2Formula;
+				IntegerFormula formula = (lt1 == null) ? lt2.toJSMT(fjsmt, s_u, s_p) : lt1.toJSMT(fjsmt, s_u, s_p);
 				return comparisonFunction.apply(formula, bndFormula);
 			}
 		}
@@ -1349,7 +1349,7 @@ public class DBM {
 			return formulas;
 		}
 
-		// TODO: convert, remove
+		// TODO: remove
 		public static void toStringBufYicesList(IndentedWriter iw, Collection<OctConstrLeqEq> aCol, String suf_unp, String suf_p, boolean negate) {
 			for (OctConstrLeqEq oc : aCol) {
 				oc.toStringBufYices(iw, suf_unp, suf_p, negate);

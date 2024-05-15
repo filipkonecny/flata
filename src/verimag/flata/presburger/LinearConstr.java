@@ -405,7 +405,7 @@ public class LinearConstr extends HashMap<Variable, LinearTerm> implements Const
 		return fjsmt.getIfm().sum(terms);
 	}
 
-	// TODO: remove, convert
+	// TODO: remove
 	public StringBuffer toSBYices(String s_u, String s_p) {
 		StringBuffer sb = new StringBuffer();
 		

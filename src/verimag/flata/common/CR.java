@@ -9,6 +9,9 @@ import java.io.StringReader;
 import java.util.*;
 
 import org.gnu.glpk.GLPK;
+import org.sosy_lab.java_smt.api.Model.ValueAssignment;
+
+import com.google.common.collect.ImmutableList;
 
 import verimag.flata.presburger.Variable;
 import yices.*;
@@ -353,6 +356,17 @@ public class CR {
 			e.printAndExit();
 			return null;
 		}
+	}
+
+	// TODO: check validity
+	// TODO: add description saying that it can only be called when sat???
+	public static Map<String, String> parseModelAssignments() {
+		ImmutableList<ValueAssignment> modelAssignments = CR.flataJavaSMT.getModelAssignments();
+		Map<String, String> model = new HashMap<String, String>();
+		for (ValueAssignment va : modelAssignments) {
+			model.put(va.getKey().toString(), va.getValue().toString());
+		}
+		return model;
 	}
 
 	// TODO: remove
