@@ -520,7 +520,7 @@ public class DisjRel {
 			// End NOT Implies
 			BooleanFormula formula = fjsmt.getBfm().not(fjsmt.getBfm().implication(formulaOR1, formulaOR2));
 
-			return fjsmt.isSatisfiable(formula);
+			return fjsmt.isSatisfiable(formula, true);
 
 			// TODO: remove
 			// StringWriter sw = new StringWriter();
