@@ -1,0 +1,27 @@
+nts identity;
+
+f {
+  in n : int;
+  out res : int;
+  initial q0;
+  final qf;
+  
+  q0 -> q1 { n > 0 && havoc() }
+  q1 -> q1b { res' = f(n-1) }
+  q1b -> qf { res' = res + 1 && havoc(res) }
+  q0 -> q2 { n < 0 && havoc() }
+  q2 -> q2b { res' = f(n+1) }
+  q2b -> qf { res' = res - 1 && havoc(res) }
+  q0 -> qf { n = 0 && res' = 0 }
+}
+
+main {
+  in x : int;
+  out res : int;
+  initial q0;
+  final qf;
+
+  q0 ->  qf { res' = f(x) }
+}
+
+

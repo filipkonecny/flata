@@ -102,11 +102,12 @@ public class FlataJavaSMT {
             if (invert) {
                 return Answer.createAnswer(isSatisfiable).negate();
             }
+            prover.close();
             return Answer.createAnswer(isSatisfiable);
         } catch (Exception e) {
             System.out.println("Error in isSatisfiable: " + e.getMessage());
             System.out.println("isSat: " + isSatisfiable);
             return Answer.DONTKNOW;
-        }
+        } 
     }
 }

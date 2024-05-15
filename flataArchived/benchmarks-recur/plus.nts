@@ -1,0 +1,34 @@
+nts plus;
+
+f {
+  in x,y : int;
+  out z : int;
+  initial s0;
+  final sf;
+
+  s0 -> s1 { y > 0 && havoc() }
+  s1 -> s1b { z' = f(x,y-1) }
+  s1b -> sf { z' = z + 1 && havoc(z) }
+  s0 -> s2 { y < 0 && havoc() }
+  s2 -> s2b { z' = f(x,y+1) }
+  s2b -> sf { z' = z - 1 && havoc(z) }
+  s0 -> s3 { y = 0 && x > 0 && havoc() }
+  s3 -> s3b { z' = f(x-1,y) }
+  s3b -> sf { z' = z + 1 && havoc(z) }
+  s0 -> s4 { y = 0 && x < 0 && havoc() }
+  s4 -> s4b { z' = f(x+1,y) }
+  s4b -> sf { z' = z - 1 && havoc(z) }
+  s0 -> sf { y = 0 && x = 0 && z' = 0 && havoc(z) } 
+  
+}
+
+main {
+  in x,y : int;
+  out z : int;
+  initial s0;
+  final sf;
+
+  s0 -> sf { z'=f(x,y) }
+
+}
+

@@ -1,0 +1,16 @@
+nts mccarthy;
+
+
+f {
+  in x : int;
+  out y : int;
+  initial s1;
+  final sf;
+
+  s1 -> sf { x > 100 && y' = x-10 && havoc(y) }
+  s1 -> s2 { x <= 100 && y' = x+14 && havoc(y) }
+  s2 -> s3 { y'=f(y) && havoc(y) }
+  s3 -> sf { y'=f(y) && havoc(y) }
+
+}
+

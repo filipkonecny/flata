@@ -1,0 +1,204 @@
+nts mccarthy;
+init true;
+instances K_3_p1_f[1];
+K_3_Q_p1_s3_p1_f {
+   in p1_i1_y : int, p1_i1_x : int, p1_o1_y : int, p1_o1_x : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   initial INIT_p1_s3;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_0 -> p1_s3 { K_2_p1_f(p1_i2_y,p1_o2_y) }
+   aux_1_0 -> aux_1_1 { K_2_Q_p1_s3_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+   aux_2_0 -> p1_sf { K_2_p1_f(p1_i2_y,p1_o2_y) }
+   aux_2_0 -> aux_2_1 { K_2_Q_p1_sf_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+}
+K_2_Q_p1_s3_p1_f {
+   in p1_i1_y : int, p1_i1_x : int, p1_o1_y : int, p1_o1_x : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   initial INIT_p1_s3;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_0 -> p1_s3 { K_1_p1_f(p1_i2_y,p1_o2_y) }
+   aux_1_0 -> aux_1_1 { K_1_Q_p1_s3_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+   aux_2_0 -> p1_sf { K_1_p1_f(p1_i2_y,p1_o2_y) }
+   aux_2_0 -> aux_2_1 { K_1_Q_p1_sf_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+}
+K_1_p1_f {
+   in p1_i1_x : int, p1_o1_y : int;
+   p1_i1_y : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   p1_o1_x : int;
+   initial p1_init;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+}
+K_2_Q_p1_sf_p1_f {
+   in p1_i1_y : int, p1_i1_x : int, p1_o1_y : int, p1_o1_x : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   initial INIT_p1_sf;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_0 -> p1_s3 { K_1_p1_f(p1_i2_y,p1_o2_y) }
+   aux_1_0 -> aux_1_1 { K_1_Q_p1_s3_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+   aux_2_0 -> p1_sf { K_1_p1_f(p1_i2_y,p1_o2_y) }
+   aux_2_0 -> aux_2_1 { K_1_Q_p1_sf_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+}
+K_1_Q_p1_s3_p1_f {
+   in p1_i1_y : int, p1_i1_x : int, p1_o1_y : int, p1_o1_x : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   initial INIT_p1_s3;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+}
+K_3_Q_p1_sf_p1_f {
+   in p1_i1_y : int, p1_i1_x : int, p1_o1_y : int, p1_o1_x : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   initial INIT_p1_sf;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_0 -> p1_s3 { K_2_p1_f(p1_i2_y,p1_o2_y) }
+   aux_1_0 -> aux_1_1 { K_2_Q_p1_s3_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+   aux_2_0 -> p1_sf { K_2_p1_f(p1_i2_y,p1_o2_y) }
+   aux_2_0 -> aux_2_1 { K_2_Q_p1_sf_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+}
+K_2_p1_f {
+   in p1_i1_x : int, p1_o1_y : int;
+   p1_i1_y : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   p1_o1_x : int;
+   initial p1_init;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_0 -> p1_s3 { K_1_p1_f(p1_i2_y,p1_o2_y) }
+   aux_1_0 -> aux_1_1 { K_1_Q_p1_s3_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+   aux_2_0 -> p1_sf { K_1_p1_f(p1_i2_y,p1_o2_y) }
+   aux_2_0 -> aux_2_1 { K_1_Q_p1_sf_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+}
+K_1_Q_p1_sf_p1_f {
+   in p1_i1_y : int, p1_i1_x : int, p1_o1_y : int, p1_o1_x : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   initial INIT_p1_sf;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+}
+K_3_p1_f {
+   in p1_i1_x : int, p1_o1_y : int;
+   p1_i1_y : int;
+   p1_o2_x : int;
+   p1_o2_y : int;
+   p1_i2_y : int;
+   p1_i2_x : int;
+   p1_o1_x : int;
+   initial p1_init;
+   final p1_final;
+   p1_s1 -> p1_sf { ((((p1_i1_x > 100) && (p1_i1_y' = (p1_i1_x-10))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s1 -> p1_s2 { ((((p1_i1_x <= 100) && (p1_i1_y' = (p1_i1_x+13))) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_s2 -> aux_1_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_s3 -> aux_2_0 { ((((true && (p1_i2_y' = p1_i1_y)) && (p1_i1_y' = p1_o2_y')) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_2_1 -> p1_init { ((true && (p1_i1_x' = p1_i2_y)) && (p1_o2_y = p1_o1_y')) }
+   p1_init -> p1_s1 { (((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   p1_sf -> p1_final { (((((p1_i1_y' = p1_i1_y) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) && (p1_o1_y' = p1_i1_y')) && (p1_o1_x' = p1_i1_x')) }
+   INIT_p1_s3 -> p1_s3 { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   INIT_p1_sf -> p1_sf { (((true && (p1_i1_y' = p1_i1_y)) && (p1_i1_x' = p1_i1_x)) && ((true && (p1_o1_y' = p1_o1_y)) && (p1_o1_x' = p1_o1_x))) }
+   aux_1_0 -> p1_s3 { K_2_p1_f(p1_i2_y,p1_o2_y) }
+   aux_1_0 -> aux_1_1 { K_2_Q_p1_s3_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+   aux_2_0 -> p1_sf { K_2_p1_f(p1_i2_y,p1_o2_y) }
+   aux_2_0 -> aux_2_1 { K_2_Q_p1_sf_p1_f(p1_i1_y,p1_i1_x,p1_o1_y,p1_o1_x) }
+}

@@ -1,0 +1,21 @@
+nts overflow;
+
+main {
+  m,a : int;
+  initial init_p;
+  error bad;
+//  te: s3 -> bad {a<m}
+  t0: init_p -> s1 {m > 1 && m'=m && a' = 0}
+  t3: s2 -> s4 {a != m - 1 && a' = a + 1 && m' = m}
+  t4: s2 -> s4 {a = m - 1 && a' = 0 && m' = m}
+  t5: s2 -> s4 {a != m - 1 && a = m - 1 && a' = a + 1 && a' = 0 && m' = m}
+  t6: s2 -> s1 {a' = 0 && m' = m}
+  t7: s2 -> bad {a = m && a' = a && m' = m}
+  t8: s4 -> s2 {a' = a && m' = m}
+  t9: s4 -> s3 {a' = 0 && m' = m}
+  t10: s4 -> bad {a = m && a' = a && m' = m}
+  t11: s1 -> s2 {a' = a && m' = m}
+  t12: s1 -> s3 {a' = 0 && m' = m}
+  t13: s3 -> s4 {a' = a && m' = m}
+  t14: s3 -> s1 {a' = 0 && m' = m}
+}

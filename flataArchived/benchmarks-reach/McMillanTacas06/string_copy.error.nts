@@ -1,0 +1,53 @@
+nts string_copy;
+ 
+main{
+
+mid_4_base,mid_4_size,mid_3_base,mid_3_size,mid_2_base,mid_2_size,mid_1_base,mid_1_size,validity____retres_,validity__i_,validity__k_,validity__x_,validity__y_,__if_ndet_cond__,_ndet_arg_4,_ndet_arg_3,_ndet_arg_2,_ndet_arg_1,_ndet_arg_0,__retres,k,i : int ;
+
+ out ret_val_, validity__ret_val__  : int;
+initial sinit ;
+final s20;
+error s1,s3,s9,s11,s13,s17,s21,s22; sinit->s0 { mid_4_size'=100*1 and mid_1_size'=100*1 and mid_2_size'=100*1 and mid_3_size'=100*1 } 
+ s0->sinter0 { havoc() } 
+ sinter0->s2 { (k',validity__k_')=NonDetInt() and havoc(k,validity__k_) } 
+ s2->s4 { i'=0 and havoc(i) } 
+ s4->s5 { havoc() } 
+ s5->s6 { havoc() } 
+ s6->s7 { not (i < 100 and i >= 0) and havoc() } 
+ s6->s7 { __if_ndet_cond__ = 0 and (i < 100 and i >= 0) and havoc() } 
+ s6->s8 { __if_ndet_cond__ != 0 and (i < 100 and i >= 0) and havoc() } 
+ s7->s9 { not (i < 100 and i >= 0) and havoc() } 
+ s7->s10 { (i < 100 and i >= 0) and (i < 100 and i >= 0) and havoc() } 
+ s8->s12 { i < 100 and i >= 0 and havoc() } 
+ s10->s14 { i'=i+1 and havoc(i) } 
+ s12->s15 { havoc() } 
+ s14->s5 { havoc() } 
+ s15->s16 { k >= 0 and havoc() } 
+ s15->s18 { k < 0 and __retres'=0 and havoc(__retres) } 
+ s16->s18 { k >= i and __retres'=0 and havoc(__retres) } 
+ s16->s19 { k < i and havoc() } 
+ s18->s20 { ret_val_'=__retres and havoc(ret_val_) } 
+ s19->s18 { k-i <=  0 and __retres'=0 and havoc(__retres) } 
+ s19->sinter1 { k-i > 0 and havoc(_ndet_arg_1,_ndet_arg_2) } 
+ sinter1->s22 { __assert_fail(_ndet_arg_0,1,_ndet_arg_1,1,20,1,_ndet_arg_2,1) and havoc() }
+}
+__assert_fail{
+in a,b,c,d,e,f,g,h : int;
+initial sinit ;
+error s0;
+sinit->s0 { true and havoc() }
+}
+
+
+
+NonDetInt{
+out ndet, validity_ndet_: int;
+initial sinit;
+final s1;
+
+sinit->s0{ havoc(ndet,  validity_ndet_)}
+s0->s1{havoc()}
+
+}
+
+

@@ -1,0 +1,14 @@
+nts fun;
+
+main {
+  in x : int;
+  y : int;
+  initial s1;
+  final sf;
+
+  s1 -> sf { x = 0 && havoc() }
+  s1 -> s1 { x != 0 && y'=x && x'=x-1 && havoc(x,y) }
+  s1 -> s1 { x != 0 && y > 0 && y'=y-1 && havoc(y) }
+
+}
+

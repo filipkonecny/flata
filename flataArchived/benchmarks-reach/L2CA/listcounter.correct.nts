@@ -1,0 +1,42 @@
+nts listcounter_correct;
+
+main {
+   c1,a,c0,x : int;
+   initial h_1;
+   error h_error;
+   t1: h_1 -> h_2 { havoc() } 
+   t10: h_9 -> h_11 { havoc() } 
+   t11: h_10 -> h_12 { havoc() } 
+   t12: h_11 -> h_13 { havoc() } 
+   t13: h_12 -> h_14 { havoc() } 
+   t15: h_13 -> h_16 { havoc() } 
+   t16: h_14 -> h_17 { a'=a+1 && havoc(a) } 
+   t17: h_16 -> h_18 { havoc() } 
+   t18: h_17 -> h_19 { c0=1 && x'=x+1 && havoc(x) } 
+   t19: h_19 -> h_9 { havoc() } 
+   t2: h_2 -> h_3 { havoc() } 
+   t20: h_17 -> h_20 { x'=x+1 && c1'=c0-1 && c0'=1 && c0>=2 && havoc(c0,c1,x) } 
+   t21: h_20 -> h_10 { c0'=c1 && havoc(c0) } 
+   t22: h_18 -> h_21 { a'=a-1 && havoc(a) } 
+   t24: h_21 -> h_23 { x'=1 && c0'=x-1 && x>=2 && havoc(c0,x) } 
+   t23: h_21 -> h_22 { x=1 && havoc() } 
+   t25_2: h_22 -> h_24 { a>=1 && havoc() } 
+   t25_1: h_22 -> h_24 { a<=0-1 && havoc() } 
+   t29: h_24 -> h_28 { havoc() } 
+   t28: h_23 -> h_27 { havoc() } 
+   t30: h_27 -> h_29 { havoc() } 
+   t3: h_3 -> h_4 { havoc() } 
+   t32: h_29 -> h_31 { a'=a-1 && havoc(a) } 
+   t31: h_28 -> h_30 { a'=a-1 && havoc(a) } 
+   t34: h_31 -> h_32 { x'=x+1 && c1'=c0-1 && c0'=1 && c0>=2 && havoc(c0,c1,x) } 
+   t33: h_30 -> h_error { havoc() } 
+   t36: h_31 -> h_33 { c0=1 && x'=x+1 && havoc(x) } 
+   t35: h_32 -> h_23 { c0'=c1 && havoc(c0) } 
+   t5: h_5 -> h_6 { havoc() } 
+   t6: h_6 -> h_7 { havoc() } 
+   t37: h_33 -> h_22 { havoc() } 
+   t4: h_4 -> h_5 { a'=0 && havoc(a) } 
+   t9: h_8 -> h_10 { x'=1 && c0'=x-1 && x>=2 && havoc(c0,x) } 
+   t7: h_7 -> h_8 { a'=a+1 && havoc(a) } 
+   t8: h_8 -> h_9 { x=1 && havoc() } 
+}

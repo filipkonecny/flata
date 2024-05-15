@@ -858,7 +858,6 @@ public class CENode {
 	
 	
 	// n >= 0
-	// TODO: convert, remove
 	private void processComposition_base(int n) {
 		
 		Collection<String> varNames = getVariableNames(n);
@@ -948,8 +947,9 @@ public class CENode {
 		if (a.isDontKnow()) {
 			throw new RuntimeException("CE analysis: solver - unknown");
 		} else if (a.isFalse()) {
-			// return -1;
+			return -1;
 		}
+		
 		
 		Map<String, String> mapping = CR.parseModelAssignments();
 		return  Integer.parseInt(mapping.get(paramName));
@@ -973,8 +973,9 @@ public class CENode {
 		// 	throw new RuntimeException("CE analysis: yices - unknown");
 		// else if (ya.isUnsat())
 		// 	return -1;
-		
+	
 		// Map<String,String> mapping = CR.parseYicesCore(core);
+			
 		// return Integer.parseInt(mapping.get(paramName));
 	}
 	

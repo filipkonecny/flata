@@ -1,0 +1,25 @@
+nts Plus;
+
+
+f {
+  in x,y : int;
+  out z : int;
+  initial si;
+  final sf;
+
+  si -> s1 { havoc() }
+  s1 -> s2 { y != 0 && havoc() }
+//  s2 -> s3 { z' = f(x,y-1) }
+  s2 -> si { x' = x && y'=y-1 && havoc(x,y) }
+  s2 -> s3 { true }
+//
+  s3 -> sf { z' = z + 1 && havoc(z) }
+  s1 -> s4 { y = 0 && x != 0 && havoc() }
+//  s4 -> s5 { z' = f(x-1,y) }
+  s4 -> si { x' = x-1 && y'=y && havoc(x,y) }
+  s4 -> s5 { true }
+//
+  s5 -> sf { z' = z + 1 && havoc(z) }
+  s1 -> sf { y = 0 && x = 0 && z' = 0 && havoc(z) }
+}
+

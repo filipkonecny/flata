@@ -7,3 +7,4 @@ tmp.txt
 /initialTests
 /.vscode
 yices
+/output_differences

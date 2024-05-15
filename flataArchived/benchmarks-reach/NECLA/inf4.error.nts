@@ -1,0 +1,54 @@
+nts Inf4;
+
+main {
+scalene,v2,a,triangle,v1,b,equilateral,v0,c,isoscles : int;
+initial s_init;
+error se;
+s_init -> s1 {((((isoscles' = 0) && (scalene' = 0)) && (triangle' = 0)) && (equilateral' = 0))}
+s17 -> s18 {((((((((isoscles = 0) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s17 -> s0 {(((((((!(isoscles = 0) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s3 -> s4 {(((((((c' = v0) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b'))}
+s21 -> s13 {(((((((scalene' = 1) && (a = a')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s1 -> s2 {(((((a' = v1) && (isoscles = isoscles')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral'))}
+s9 -> s27 {((((((((a >= b) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s9 -> s10 {(((((((!(a >= b) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s16 -> s0 {((((((((scalene = 0) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s16 -> se {(((((((!(scalene = 0) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s25 -> s26 {((((((((c >= b) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s25 -> s11 {(((((((!(c >= b) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s2 -> s3 {((((((b' = v2) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles'))}
+s20 -> s21 {(((((((((isoscles = 0) || (equilateral = 0)) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s20 -> s13 {(((((((!((isoscles = 0) || (equilateral = 0)) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s28 -> s10 {(((((((isoscles' = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (b = b')) && (c = c'))}
+s30 -> s9 {(((((((triangle' = -1) && (a = a')) && (scalene = scalene')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s8 -> s29 {(((((((((((a > 0) && (b > 0)) && (c > 0)) && (a < (b + c))) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s8 -> s30 {(((((((!((((a > 0) && (b > 0)) && (c > 0)) && (a < (b + c))) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s4 -> s5 {(((((((isoscles' = 0) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (b = b')) && (c = c'))}
+s11 -> s22 {((((((((a >= b) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s11 -> s12 {(((((((!(a >= b) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s10 -> s25 {((((((((b >= c) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s10 -> s11 {(((((((!(b >= c) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s27 -> s28 {((((((((b >= a) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s27 -> s10 {(((((((!(b >= a) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s14 -> s15 {((((((((equilateral = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s14 -> s17 {(((((((!(equilateral = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s5 -> s6 {(((((((scalene' = 0) && (a = a')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s12 -> s19 {(((((((((a + b) > c) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s12 -> s13 {(((((((!((a + b) > c) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s6 -> s7 {(((((((triangle' = 0) && (a = a')) && (scalene = scalene')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s7 -> s8 {(((((((equilateral' = 0) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s24 -> s12 {(((((((equilateral' = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s26 -> s11 {(((((((isoscles' = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (b = b')) && (c = c'))}
+s23 -> s24 {((((((((c >= a) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s23 -> s12 {(((((((!(c >= a) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s29 -> s9 {(((((((triangle' = 1) && (a = a')) && (scalene = scalene')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s19 -> s20 {(((((((triangle' = 1) && (a = a')) && (scalene = scalene')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s18 -> s0 {((((((((scalene = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s18 -> se {(((((((!(scalene = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s15 -> s16 {((((((((isoscles = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s15 -> se {(((((((!(isoscles = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s22 -> s23 {((((((((b >= c) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s22 -> s12 {(((((((!(b >= c) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s13 -> s14 {((((((((triangle = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+s13 -> s0 {(((((((!(triangle = 1) && (a = a')) && (scalene = scalene')) && (triangle = triangle')) && (equilateral = equilateral')) && (isoscles = isoscles')) && (b = b')) && (c = c'))}
+}

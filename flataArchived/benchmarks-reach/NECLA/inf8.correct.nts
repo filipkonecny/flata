@@ -1,0 +1,45 @@
+nts Inf8;
+
+main {
+utriag,ltriag,v2,triag,a,unknown,v1,id,b,v0,c,v3,d : int;
+initial s1;
+error se;
+s17 -> s18 {(((((((((((c = 0) && (b = 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s17 -> s22 {(((((((((!((c = 0) && (b = 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s3 -> s4 {(((c' = v0) && (a = a')) && (b = b'))}
+s21 -> s19 {(((((((((id' = 1) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (c = c'))}
+s1 -> s2 {(a' = v1)}
+s9 -> s10 {(((((((((unknown' = 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s16 -> s13 {((((((((((((id > 0) || (ltriag > 0)) || (utriag > 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s16 -> se {(((((((((!(((id > 0) || (ltriag > 0)) || (utriag > 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s25 -> s12 {((((((((((c = 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s25 -> se {(((((((((!(c = 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s2 -> s3 {((b' = v2) && (a = a'))}
+s20 -> s12 {(((((((((utriag' = 1) && (d = d')) && (a = a')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s8 -> s9 {((((((((triag' = 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s4 -> s5 {((((d' = v3) && (a = a')) && (b = b')) && (c = c'))}
+s11 -> s17 {((((((((((triag > 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s11 -> s26 {(((((((((!(triag > 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s10 -> s27 {(((((((((((c = 0) || (b = 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s10 -> s11 {(((((((((!((c = 0) || (b = 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s27 -> s11 {(((((((((triag' = 1) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s14 -> s0 {(((((((((((unknown > 0) || (triag > 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s14 -> se {(((((((((!((unknown > 0) || (triag > 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s5 -> s6 {(((((id' = 0) && (a = a')) && (b = b')) && (c = c')) && (d = d'))}
+s12 -> s16 {((((((((((triag > 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s12 -> s13 {(((((((((!(triag > 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s6 -> s7 {((((((utriag' = 0) && (d = d')) && (a = a')) && (b = b')) && (id = id')) && (c = c'))}
+s7 -> s8 {(((((((ltriag' = 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (b = b')) && (id = id')) && (c = c'))}
+s24 -> s25 {(((((((((utriag' = 1) && (d = d')) && (a = a')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s26 -> s12 {(((((((((unknown' = 1) && (d = d')) && (a = a')) && (utriag = utriag')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s23 -> s12 {(((((((((ltriag' = 1) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (b = b')) && (id = id')) && (c = c'))}
+s19 -> s20 {(((((((((ltriag' = 1) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (b = b')) && (id = id')) && (c = c'))}
+s18 -> s21 {(((((((((((a = 1) && (d = 1)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s18 -> s19 {(((((((((!((a = 1) && (d = 1)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s15 -> s14 {(((((((((((c = 0) && (b = 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s15 -> se {(((((((((!((c = 0) && (b = 0)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s22 -> s23 {((((((((((b = 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s22 -> s24 {(((((((((!(b = 0) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s13 -> s15 {(((((((((((triag > 0) && (utriag = ltriag)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+s13 -> s14 {(((((((((!((triag > 0) && (utriag = ltriag)) && (d = d')) && (a = a')) && (utriag = utriag')) && (unknown = unknown')) && (triag = triag')) && (ltriag = ltriag')) && (b = b')) && (id = id')) && (c = c'))}
+}

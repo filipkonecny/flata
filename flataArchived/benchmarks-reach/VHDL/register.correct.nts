@@ -1,0 +1,52 @@
+nts flipflop;
+
+main {
+  q,data : int;
+  initial s_init;
+  error bad;
+  t1: s_init -> s4 {q' = 0 && data' = 0}
+  t2: s0 -> s1 {q' = q && data' = data}
+  t3: s0 -> s2 {q' = q && data' = data}
+  t4: s0 -> s3 {q' = data && data' = data}
+  t5: s0 -> s4 {data' = 0 && q' = 0}
+  t6: s0 -> s6 {data' = 0 && q' = 0}
+  t7: s1 -> s0 {q' = q && data' = data}
+  t8: s1 -> s2 {q' = q && data' = data}
+  t9: s1 -> s3 {q' = q && data' = data}
+  t10: s1 -> s5 {data' = 0 && q' = 0}
+  t11: s1 -> s7 {data' = 0 && q' = 0}
+  t12: s2 -> s0 {q' = q && data' = data}
+  t13: s2 -> s1 {q' = data && data' = data}
+  t14: s2 -> s3 {q' = data && data' = data}
+  t15: s2 -> s4 {data' = 0 && q' = 0}
+  t16: s2 -> s6 {data' = 0 && q' = 0}
+  t17: s3 -> s0 {q' = q && data' = data}
+  t18: s3 -> s1 {q' = q && data' = data}
+  t19: s3 -> s2 {q' = q && data' = data}
+  t20: s3 -> s5 {data' = 0 && q' = 0}
+  t21: s3 -> s7 {data' = 0 && q' = 0}
+  t22: s4 -> s0 {q' = q && data' = data}
+  t23: s4 -> s2 {q' = q && data' = data}
+  t24: s4 -> s5 {data' = 0 && q' = 0}
+  t25: s4 -> s6 {data' = 0 && q' = 0}
+  t26: s4 -> s7 {data' = 0 && q' = 0}
+  t27: s4 -> bad {q != 0 && q' = q && data' = data}
+  t28: s5 -> s1 {q' = q && data' = data}
+  t29: s5 -> s3 {q' = q && data' = data}
+  t30: s5 -> s4 {data' = 0 && q' = 0}
+  t31: s5 -> s6 {q' = 0 && data' = 0}
+  t32: s5 -> s7 {data' = 0 && q' = 0}
+  t33: s5 -> bad {q != 0 && q' = q && data' = data}
+  t34: s6 -> s0 {q' = q && data' = data}
+  t35: s6 -> s2 {q' = q && data' = data}
+  t36: s6 -> s4 {data' = 0 && q' = 0}
+  t37: s6 -> s5 {data' = 0 && q' = 0}
+  t38: s6 -> s7 {data' = 0 && q' = 0}
+  t39: s6 -> bad {q != 0 && q' = q && data' = data}
+  t40: s7 -> s1 {q' = q && data' = data}
+  t41: s7 -> s3 {q' = q && data' = data}
+  t42: s7 -> s4 {data' = 0 && q' = 0}
+  t43: s7 -> s5 {data' = 0 && q' = 0}
+  t44: s7 -> s6 {data' = 0 && q' = 0}
+  t45: s7 -> bad {q != 0 && q' = q && data' = data}
+}

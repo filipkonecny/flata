@@ -1,0 +1,20 @@
+nts LeUserDef;
+
+
+f {
+  in x,y : int;
+  out z: int;
+  initial si;
+  final sf;
+
+  si -> s1 { havoc() }
+  s1 -> s2 { x > 0 && y > 0 && havoc() }
+//  s2 -> sf { z' = f(x-1,y-1) }
+  s2 -> si { x' = x-1 && y'=y-1 && havoc(x,y) }
+  s2 -> sf { true }
+//
+  s1 -> s3 { !(x > 0 && y > 0) && havoc() }
+  s3 -> sf { x = 0 && z'=1 }
+  s3 -> sf { x != 0 && z'=0 }
+}
+

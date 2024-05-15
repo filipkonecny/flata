@@ -1,0 +1,114 @@
+nts listreversal_correct;
+
+main {
+   c1,c2,c0,aux,z,y,x : int;
+   initial h_1;
+   final h_error;
+   h_1 -> h_2 { aux'=z+y+x && havoc(aux) } 
+   h_2 -> h_3 { havoc() } 
+   h_3 -> h_4 { havoc() } 
+   h_4 -> h_5 { x=1 && havoc() } 
+   h_4 -> h_6 { x'=1 && c0'=x-1 && x>=2 && havoc(c0,x) } 
+   h_5 -> h_7 { x'=1 && havoc(x) } 
+   h_6 -> h_8 { x'=1 && havoc(x) } 
+   h_7 -> h_9 { havoc() } 
+   h_8 -> h_10 { havoc() } 
+   h_9 -> h_11 { havoc() } 
+   h_10 -> h_12 { havoc() } 
+   h_11 -> h_13 { havoc() } 
+   h_12 -> h_14 { havoc() } 
+   h_13 -> h_15 { havoc() } 
+   h_14 -> h_16 { havoc() } 
+   h_16 -> h_18 { havoc() } 
+   h_15 -> h_17 { havoc() } 
+   h_17 -> h_20 { y=1 && havoc() } 
+   h_17 -> h_19 { y'=1 && c0'=y-1 && y>=2 && havoc(c0,y) } 
+   h_18 -> h_22 { c1'=c0-1 && c0'=1 && c0>=2 && havoc(c0,c1) } 
+   h_18 -> h_21 { c0=1 && havoc() } 
+   h_20 -> h_24 { y'=1 && havoc(y) } 
+   h_19 -> h_23 { y'=1 && havoc(y) } 
+   h_22 -> h_26 { c0'=1 && havoc(c0) } 
+   h_21 -> h_25 { c0'=1 && havoc(c0) } 
+   h_24 -> h_28 { y'=y+x && havoc(y) } 
+   h_23 -> h_27 { y'=y+x && havoc(y) } 
+   h_29 -> h_9 { z'=z && x'=c0 && y'=y && havoc(x,z,y) } 
+   h_25 -> h_29 { c0'=c0+x && havoc(c0) } 
+   h_30 -> h_10 { z'=z && c0'=c1 && x'=c0 && y'=y && havoc(c0,x,z,y) } 
+   h_26 -> h_30 { c0'=c0+x && havoc(c0) } 
+   h_31 -> h_33 { havoc() } 
+   h_32 -> h_34 { havoc() } 
+   h_27 -> h_31 { havoc() } 
+   h_28 -> h_32 { havoc() } 
+   h_35 -> h_37 { havoc() } 
+   h_36 -> h_38 { havoc() } 
+   h_33 -> h_35 { havoc() } 
+   h_34 -> h_36 { havoc() } 
+   h_38 -> h_41 { z=1 && havoc() } 
+   h_38 -> h_42 { z'=1 && c0'=z-1 && z>=2 && havoc(c0,z) } 
+   h_37 -> h_39 { c1'=c0-1 && c0'=1 && c0>=2 && havoc(c0,c1) } 
+   h_37 -> h_40 { c0=1 && havoc() } 
+   h_41 -> h_45 { z'=1 && havoc(z) } 
+   h_42 -> h_46 { z'=1 && havoc(z) } 
+   h_39 -> h_43 { c0'=1 && havoc(c0) } 
+   h_40 -> h_44 { c0'=1 && havoc(c0) } 
+   h_46 -> h_50 { havoc() } 
+   h_45 -> h_49 { havoc() } 
+   h_44 -> h_48 { havoc() } 
+   h_43 -> h_47 { havoc() } 
+   h_50 -> h_54 { havoc() } 
+   h_49 -> h_53 { havoc() } 
+   h_48 -> h_52 { havoc() } 
+   h_47 -> h_51 { havoc() } 
+   h_54 -> h_58 { havoc() } 
+   h_53 -> h_57 { havoc() } 
+   h_52 -> h_56 { havoc() } 
+   h_51 -> h_55 { havoc() } 
+   h_61 -> h_error { aux<=z+y-1 && havoc() } 
+   h_57 -> h_61 { havoc() } 
+   h_56 -> h_60 { havoc() } 
+   h_55 -> h_59 { havoc() } 
+   h_62 -> h_65 { havoc() } 
+   h_63 -> h_66 { c1=1 && havoc() } 
+   h_63 -> h_67 { c1'=1 && c2'=c1-1 && c1>=2 && havoc(c2,c1) } 
+   h_64 -> h_68 { z=1 && havoc() } 
+   h_61 -> h_error { aux>=z+y+1 && havoc() } 
+   h_58 -> h_62 { havoc() } 
+   h_59 -> h_63 { havoc() } 
+   h_60 -> h_64 { havoc() } 
+   h_67 -> h_73 { c1'=1 && havoc(c1) } 
+   h_68 -> h_74 { z'=1 && havoc(z) } 
+   h_69 -> h_75 { z'=1 && havoc(z) } 
+   h_70 -> h_76 { c0'=1 && havoc(c0) } 
+   h_64 -> h_69 { c1'=z-1 && z'=1 && z>=2 && havoc(c1,z) } 
+   h_65 -> h_70 { c1'=c0-1 && c0'=1 && c0>=2 && havoc(c0,c1) } 
+   h_65 -> h_71 { c0=1 && havoc() } 
+   h_66 -> h_72 { c1'=1 && havoc(c1) } 
+   h_74 -> h_80 { z'=c0+z && havoc(z) } 
+   h_79 -> h_47 { z'=z && c1'=c2 && c0'=c1 && y'=y && havoc(c0,c1,z,y) } 
+   h_75 -> h_81 { z'=c0+z && havoc(z) } 
+   h_80 -> h_49 { z'=z && y'=y && havoc(z,y) } 
+   h_72 -> h_78 { c1'=c1+c0 && havoc(c1) } 
+   h_71 -> h_77 { c0'=1 && havoc(c0) } 
+   h_73 -> h_79 { c1'=c1+c0 && havoc(c1) } 
+   h_78 -> h_48 { z'=z && c0'=c1 && y'=y && havoc(c0,z,y) } 
+   h_84 -> h_86 { havoc() } 
+   h_83 -> h_85 { havoc() } 
+   h_86 -> h_88 { havoc() } 
+   h_85 -> h_87 { havoc() } 
+   h_76 -> h_82 { havoc() } 
+   h_81 -> h_50 { z'=z && c0'=c1 && y'=y && havoc(c0,z,y) } 
+   h_82 -> h_84 { havoc() } 
+   h_77 -> h_83 { havoc() } 
+   h_91 -> h_93 { c1'=1 && havoc(c1) } 
+   h_92 -> h_94 { c1'=1 && havoc(c1) } 
+   h_90 -> h_91 { c1'=1 && c2'=c1-1 && c1>=2 && havoc(c2,c1) } 
+   h_90 -> h_92 { c1=1 && havoc() } 
+   h_89 -> h_error { c0<=aux-z-y-1 && havoc() } 
+   h_88 -> h_90 { havoc() } 
+   h_87 -> h_89 { havoc() } 
+   h_89 -> h_error { c0>=aux-z-y+1 && havoc() } 
+   h_94 -> h_96 { c1'=c1+c0 && havoc(c1) } 
+   h_96 -> h_83 { z'=z && c0'=c1 && y'=y && havoc(c0,z,y) } 
+   h_93 -> h_95 { c1'=c1+c0 && havoc(c1) } 
+   h_95 -> h_82 { z'=z && c1'=c2 && c0'=c1 && y'=y && havoc(c0,c1,z,y) } 
+}

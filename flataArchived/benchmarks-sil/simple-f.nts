@@ -1,0 +1,12 @@
+// example of a falsifiable formula
+
+l,i,a[N] : int;
+
+check valid
+ (
+  (forall j:int . ((0 <= j && j <= i-1) -> (a[j] <= a[j+1] - 3))) &&
+  (forall j:int . ((i <= j && j <= l-1) -> (a[j] = a[j+1] - 5))) &&
+  i>=3 && l>=i+4 && N=l+1
+ ) ->
+ (forall j:int . ((0 <= j && j <= l-1) -> (a[j] <= a[j+1] - 5)));
+

@@ -1,0 +1,49 @@
+nts scan;
+ 
+main{
+
+mid_2_base,mid_2_size,mid_1_base,mid_1_size,validity____retres_,validity__i_,validity__j_,validity__x_,__if_ndet_cond__,_ndet_arg_4,_ndet_arg_3,_ndet_arg_2,_ndet_arg_1,_ndet_arg_0,__retres,j,i : int ;
+
+ out ret_val_, validity__ret_val__  : int;
+initial sinit ;
+final s15;
+error s1,s3,s7,s12,s16,s17; sinit->s0 { mid_1_size'=100*4 and mid_2_size'=100*4 } 
+ s0->s2 { i'=0 and havoc(i) } 
+ s2->sinter0 { havoc() } 
+ sinter0->s4 { (j',validity__j_')=NonDetInt() and havoc(j,validity__j_) } 
+ s4->s5 { havoc() } 
+ s5->s6 { havoc() } 
+ s6->s7 { not (i < 100 and i >= 0) and i'=i+1 and havoc(i) } 
+ s6->s8 { __if_ndet_cond__ = 0 and (i < 100 and i >= 0) and i'=i+1 and havoc(i) } 
+ s6->s9 { __if_ndet_cond__ != 0 and (i < 100 and i >= 0) and havoc() } 
+ s8->s5 { havoc() } 
+ s9->s10 { havoc() } 
+ s10->s11 { j >= 0 and havoc() } 
+ s10->s13 { j < 0 and __retres'=0 and havoc(__retres) } 
+ s11->s13 { j >= i and __retres'=0 and havoc(__retres) } 
+ s11->s14 { j < i and havoc() } 
+ s13->s15 { ret_val_'=__retres and havoc(ret_val_) } 
+ s14->s13 { i >= 0 and __retres'=0 and havoc(__retres) } 
+ s14->sinter1 { i < 0 and havoc(_ndet_arg_1,_ndet_arg_2) } 
+ sinter1->s17 { __assert_fail(_ndet_arg_0,1,_ndet_arg_1,1,18,1,_ndet_arg_2,1) and havoc() }
+}
+__assert_fail{
+in a,b,c,d,e,f,g,h : int;
+initial sinit ;
+error s0;
+sinit->s0 { true and havoc() }
+}
+
+
+
+NonDetInt{
+out ndet, validity_ndet_: int;
+initial sinit;
+final s1;
+
+sinit->s0{ havoc(ndet,  validity_ndet_)}
+s0->s1{havoc()}
+
+}
+
+

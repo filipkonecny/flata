@@ -1,0 +1,49 @@
+nts Blast;
+
+main {
+new_x,b2,b3,v2,LOCK,v5,b4,b1,got_lock,v1,old_x,v4,v0,v3 : int;
+initial s_init;
+error se;
+s_init -> s1 {((got_lock' = 0) && (LOCK' = 0))}
+s17 -> s18 {((((((((old_x' = new_x) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s3 -> s4 {(((((b1' = 0) && (got_lock = got_lock')) && (LOCK = LOCK')) && (new_x = new_x')) && (old_x = old_x'))}
+s21 -> s12 {((((((((new_x' = (new_x + 1)) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock'))}
+s1 -> s2 {(((new_x' = v0) && (got_lock = got_lock')) && (LOCK = LOCK'))}
+s9 -> s10 {((((((((b3' = v1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s16 -> s17 {((((((((LOCK' = 1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s25 -> s26 {(((((((((got_lock > 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s25 -> s22 {((((((((!(got_lock > 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s2 -> s3 {((((old_x' = v2) && (got_lock = got_lock')) && (LOCK = LOCK')) && (new_x = new_x'))}
+s20 -> s21 {((((((((LOCK' = 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s28 -> s29 {(((((((((LOCK = 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s28 -> se {((((((((!(LOCK = 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s30 -> s25 {((((((((got_lock' = (got_lock + 1)) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (new_x = new_x'))}
+s8 -> s9 {((((((((b2' = v3) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s4 -> s5 {((((((b2' = 0) && (b1 = b1')) && (old_x = old_x')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s11 -> s22 {(((((((((b1 >= 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s11 -> s15 {((((((((!(b1 >= 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s10 -> s11 {((((((((b4' = v4) && (b2 = b2')) && (b1 = b1')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s27 -> s22 {((((((((LOCK' = 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s14 -> s0 {((((((((LOCK' = 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s5 -> s6 {(((((((b3' = 0) && (b2 = b2')) && (b1 = b1')) && (old_x = old_x')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s12 -> s15 {(((((((((new_x != old_x) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s12 -> s13 {((((((((!(new_x != old_x) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s6 -> s7 {((((((((b4' = 0) && (b2 = b2')) && (b1 = b1')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s7 -> s8 {((((((((b1' = v5) && (b2 = b2')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s24 -> s28 {(((((((((b3 >= 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s24 -> s25 {((((((((!(b3 >= 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s26 -> s27 {(((((((((LOCK = 1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s26 -> se {((((((((!(LOCK = 1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s23 -> s24 {((((((((got_lock' = 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (new_x = new_x'))}
+s29 -> s30 {((((((((LOCK' = 1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s19 -> s20 {(((((((((LOCK = 1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s19 -> se {((((((((!(LOCK = 1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s18 -> s19 {(((((((((b4 >= 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s18 -> s12 {((((((((!(b4 >= 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s15 -> s16 {(((((((((LOCK = 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s15 -> se {((((((((!(LOCK = 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s22 -> s23 {(((((((((b2 >= 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s22 -> s15 {((((((((!(b2 >= 0) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s13 -> s14 {(((((((((LOCK = 1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+s13 -> se {((((((((!(LOCK = 1) && (b2 = b2')) && (b1 = b1')) && (b4 = b4')) && (old_x = old_x')) && (b3 = b3')) && (LOCK = LOCK')) && (got_lock = got_lock')) && (new_x = new_x'))}
+}

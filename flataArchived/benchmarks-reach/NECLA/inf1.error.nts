@@ -1,0 +1,32 @@
+nts Inf1;
+
+main {
+v2,a,v1,flag1,b,v0,c,flag2 : int;
+initial s1;
+error se;
+s17 -> s7 {(((((flag1' = 0) && (a = a')) && (flag2 = flag2')) && (b = b')) && (c = c'))}
+s3 -> s4 {(((c' = v0) && (a = a')) && (b = b'))}
+s1 -> s2 {(a' = v1)}
+s9 -> s10 {(((((((flag2 - flag1) <= 0) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s9 -> s0 {(((((!((flag2 - flag1) <= 0) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s16 -> s7 {(((((flag1' = 1) && (a = a')) && (flag2 = flag2')) && (b = b')) && (c = c'))}
+s2 -> s3 {((b' = v2) && (a = a'))}
+s8 -> s12 {((((((flag1 = 1) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s8 -> s9 {(((((!(flag1 = 1) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s4 -> s5 {((((flag1' = 0) && (a = a')) && (b = b')) && (c = c'))}
+s11 -> s0 {((((((a < c) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s11 -> se {(((((!(a < c) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s10 -> s11 {(((((((flag1 + flag2) < 1) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s10 -> s0 {(((((!((flag1 + flag2) < 1) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s14 -> s8 {(((((flag2' = 1) && (a = a')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s5 -> s6 {(((((flag2' = 0) && (a = a')) && (b = b')) && (c = c')) && (flag1 = flag1'))}
+s12 -> s13 {((((((flag2 = 1) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s12 -> s9 {(((((!(flag2 = 1) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s6 -> s16 {((((((a > b) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s6 -> s17 {(((((!(a > b) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s7 -> s14 {((((((b > c) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s7 -> s15 {(((((!(b > c) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s15 -> s8 {(((((flag2' = 0) && (a = a')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s13 -> s9 {((((((a >= c) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+s13 -> se {(((((!(a >= c) && (a = a')) && (flag2 = flag2')) && (flag1 = flag1')) && (b = b')) && (c = c'))}
+}

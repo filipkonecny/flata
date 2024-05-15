@@ -1,0 +1,45 @@
+nts pgm;
+
+// Global Decls
+n, sent, recv, CNT_wrpc, CNT_rpccall: int; 
+
+main {
+
+initial si;
+final sf;
+error se;
+
+si -> sinit { n' >= 1 && sent' = 0 && recv' = 0 && CNT_wrpc' = 0 && CNT_rpccall' = 0 && havoc(n, sent, recv, CNT_wrpc, CNT_rpccall)}
+
+// post_wrpc() in main()
+sinit -> seventloop { CNT_wrpc' = CNT_wrpc + 1 && havoc(CNT_wrpc) }
+
+seventloop -> swrpcdispatch { CNT_wrpc >= 1 && CNT_wrpc' = CNT_wrpc - 1 && havoc(CNT_wrpc)}
+
+seventloop -> srpccalldispatch { CNT_rpccall >= 1 && CNT_rpccall' = CNT_rpccall - 1 && havoc(CNT_rpccall) }
+
+// assertion failure 
+swrpcdispatch -> se { sent+1 <= recv && havoc() } 
+
+// assertion success
+swrpcdispatch -> sw1 { sent >= recv && havoc() }
+
+// outermost if expr fails
+sw1 -> seventloop { recv >= n && havoc() }
+
+// outermost if expr holds 
+sw1 -> sw2 { recv+1 <= n && havoc() }
+
+// innermost if expr holds; post_rpccall(): ++sent;
+sw2 -> swendif { sent+1 <= n && sent - recv <= 1 && CNT_rpccall' = CNT_rpccall + 1 && sent' = sent + 1 && havoc(CNT_rpccall, sent) }
+
+// innermost if expr fails
+sw2 -> swendif { sent >= n  && havoc() }
+sw2 -> swendif { sent - recv >= 2 && havoc() }
+
+// post_wrpc() in post_wrpc()
+swendif -> seventloop { CNT_wrpc' = CNT_wrpc + 1 && havoc(CNT_wrpc) }
+
+srpccalldispatch -> seventloop { sent' = sent + 1 && havoc(sent) }
+
+}

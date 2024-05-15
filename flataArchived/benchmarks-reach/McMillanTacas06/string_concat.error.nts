@@ -1,0 +1,64 @@
+nts string_concat;
+ 
+main{
+
+mid_6_base,mid_6_size,mid_5_base,mid_5_size,mid_4_base,mid_4_size,mid_3_base,mid_3_size,mid_2_base,mid_2_size,mid_1_base,mid_1_size,validity____retres_,validity__i_,validity__j_,validity__k_,validity__tmp_,validity__x_,validity__y_,validity__z_,__if_ndet_cond__,_ndet_arg_0,__retres,tmp,k,j,i : int ;
+
+ out ret_val_, validity__ret_val__  : int;
+initial sinit ;
+final s37;
+error s1,s3,s9,s11,s13,s19,s21,s23,s26,s29,s31,s33,s35; sinit->s0 { mid_4_size'=100*1 and mid_5_size'=100*1 and mid_1_size'=100*1 and mid_6_size'=200*1 and mid_2_size'=100*1 and mid_3_size'=200*1 } 
+ s0->sinter0 { havoc() } 
+ sinter0->s2 { (k',validity__k_')=NonDetInt() and havoc(k,validity__k_) } 
+ s2->s4 { i'=0 and havoc(i) } 
+ s4->s5 { havoc() } 
+ s5->s6 { havoc() } 
+ s6->s7 { not (i < 100 and i >= 0) and havoc() } 
+ s6->s7 { __if_ndet_cond__ = 0 and (i < 100 and i >= 0) and havoc() } 
+ s6->s8 { __if_ndet_cond__ != 0 and (i < 100 and i >= 0) and havoc() } 
+ s7->s9 { not (i < 100 and i >= 0) and havoc() } 
+ s7->s10 { (i < 200 and i >= 0) and (i < 100 and i >= 0) and havoc() } 
+ s8->s12 { j'=0 and havoc(j) } 
+ s10->s14 { i'=i+1 and havoc(i) } 
+ s12->s15 { havoc() } 
+ s14->s5 { havoc() } 
+ s15->s16 { havoc() } 
+ s16->s17 { not (j < 100 and j >= 0) and havoc() } 
+ s16->s17 { __if_ndet_cond__ = 0 and (j < 100 and j >= 0) and havoc() } 
+ s16->s18 { __if_ndet_cond__ != 0 and (j < 100 and j >= 0) and havoc() } 
+ s17->s19 { not (j < 100 and j >= 0) and havoc() } 
+ s17->s20 { (i < 200 and i >= 0) and (j < 100 and j >= 0) and havoc() } 
+ s18->s22 { j < 200 and j >= 0 and havoc() } 
+ s20->s24 { i'=i+1 and havoc(i) } 
+ s22->s25 { havoc() } 
+ s24->s27 { j'=j+1 and havoc(j) } 
+ s25->s28 { k >= 0 and havoc() } 
+ s25->s30 { k < 0 and tmp'=0 and havoc(tmp) } 
+ s27->s15 { havoc() } 
+ s28->s32 { k < j and tmp'=1 and havoc(tmp) } 
+ s28->s34 { k >= j and tmp'=0 and havoc(tmp) } 
+ s30->s36 { __retres'=0 and havoc(__retres) } 
+ s32->s36 { __retres'=0 and havoc(__retres) } 
+ s34->s36 { __retres'=0 and havoc(__retres) } 
+ s36->s37 { ret_val_'=__retres and havoc(ret_val_) }
+}
+__assert_fail{
+in a,b,c,d,e,f,g,h : int;
+initial sinit ;
+error s0;
+sinit->s0 { true and havoc() }
+}
+
+
+
+NonDetInt{
+out ndet, validity_ndet_: int;
+initial sinit;
+final s1;
+
+sinit->s0{ havoc(ndet,  validity_ndet_)}
+s0->s1{havoc()}
+
+}
+
+

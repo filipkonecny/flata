@@ -1,0 +1,42 @@
+/*
+Licensed under the MIT License.
+Copyright (C) 2012 EPFL (Switzerland) , Verimag (France).
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+nts anubhav;
+ 
+main{
+
+__nts__naffected_ret_val_,validity____nts__naffected_ret_val__,validity____retres_,validity__i_,validity__j_,validity__x_,validity__y_,__ndet_cond__,__if_ndet_cond__,_ndet_arg_4,_ndet_arg_3,_ndet_arg_2,_ndet_arg_1,_ndet_arg_0,__retres,y,x,j,i : int ;
+
+ out ret_val_, validity__ret_val__  : int;
+initial sinit ;
+final s23;
+error s1,s3,s8,s10,s11,s14,s18,s19,s21,s22;
+ sinit->s0 { havoc() } 
+ s0->s2 { x'=i and havoc(x) } 
+ s2->s4 { y'=j and havoc(y) } 
+ s4->s5 { havoc() } 
+ s5->s6 { havoc() } 
+ s6->s7 { x != 0 and havoc() } 
+ s6->s9 { x = 0 and havoc() } 
+ s7->s12 { x'=x-1 and havoc(x) } 
+ s9->s13 { havoc() } 
+ s12->s15 { y'=y-1 and havoc(y) } 
+ s13->s16 { havoc() } 
+ s15->s5 { havoc() } 
+ s16->s17 { i = j and havoc() } 
+ s16->s20 { __retres'=0 and i != j and havoc(__retres) } 
+ s17->s20 { __retres'=0 and y = 0 and havoc(__retres) } 
+ s17->sinter0 { y != 0 and havoc(_ndet_arg_1,_ndet_arg_2) } 
+ sinter0->s22 { havoc() } 
+ s17->sinter1 { y != 0 and havoc(_ndet_arg_1,_ndet_arg_2) } 
+ sinter1->s22 { havoc() } 
+ s20->s23 { ret_val_'=__retres and havoc(ret_val_) }
+}
+

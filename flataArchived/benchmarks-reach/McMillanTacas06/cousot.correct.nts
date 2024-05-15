@@ -1,0 +1,54 @@
+nts cousot;
+ 
+main{
+
+validity____retres_,validity__tmp_,validity__x_,validity__y_,__if_ndet_cond__,_ndet_arg_4,_ndet_arg_3,_ndet_arg_2,_ndet_arg_1,_ndet_arg_0,__retres,tmp,y,x : int ;
+
+ out ret_val_, validity__ret_val__  : int;
+initial sinit ;
+final s28;
+error s1,s3,s6,s11,s14,s19,s22,s24,s25,s26; sinit->s0 {  } 
+ s0->s2 { x'=0 and havoc(x) } 
+ s2->s4 { y'=0 and havoc(y) } 
+ s4->s5 { havoc() } 
+ s5->sinter0 { havoc() } 
+ sinter0->s7 { (tmp',validity__tmp_')=NonDetInt() and havoc(tmp,validity__tmp_) } 
+ s7->s8 { havoc() } 
+ s8->s9 { tmp != 0 and havoc() } 
+ s8->s10 { tmp = 0 and havoc() } 
+ s9->s12 { x'=x+1 and havoc(x) } 
+ s10->s13 { havoc() } 
+ s12->s15 { y'=y+1 and havoc(y) } 
+ s13->s16 { havoc() } 
+ s15->s5 { havoc() } 
+ s16->s17 { x > 0 and havoc() } 
+ s16->s18 { x <=  0 and havoc() } 
+ s17->s20 { x'=x-1 and havoc(x) } 
+ s18->s21 { havoc() } 
+ s20->s23 { y'=y-1 and havoc(y) } 
+ s21->sinter1 { y != 0 and havoc(_ndet_arg_1,_ndet_arg_2) } 
+ sinter1->s25 { __assert_fail(_ndet_arg_0,1,_ndet_arg_1,1,22,1,_ndet_arg_2,1) and havoc() } 
+ s21->s27 { y = 0 and __retres'=1 and havoc(__retres) } 
+ s23->s13 { havoc() } 
+ s27->s28 { ret_val_'=__retres and havoc(ret_val_) }
+}
+__assert_fail{
+in a,b,c,d,e,f,g,h : int;
+initial sinit ;
+error s0;
+sinit->s0 { true and havoc() }
+}
+
+
+
+NonDetInt{
+out ndet, validity_ndet_: int;
+initial sinit;
+final s1;
+
+sinit->s0{ havoc(ndet,  validity_ndet_)}
+s0->s1{havoc()}
+
+}
+
+
