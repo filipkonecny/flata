@@ -17,8 +17,11 @@ public class Main {
 	public static void initActions() {
 		// TODO: remove
 		CR.launchYices();
-
-		CR.initFLataJavaSMT();
+		if (Parameters.isOnParameter(Parameters.SOLVER)) {
+			CR.initFLataJavaSMT(Parameters.getParameter(Parameters.SOLVER).arguments()[0]);
+		} else {
+			CR.initFLataJavaSMT();
+		}
 		
 		//if (!CR.RELEASE)
 		if (Parameters.isOnParameter(Parameters.ABSTR_OCT)) {
@@ -314,7 +317,7 @@ public class Main {
 			System.out.println("FW in Join: "+(float)PartitionsJoin.TIME / 1000+" s");
 		}
 		
-		System.out.println(CR.flataJavaSMT.getSolverCalls() + ", " + CR.yices_calls);
+		System.out.println(CR.flataJavaSMT.getSolverCalls() + ", " + CR.yices_calls); // TODO: remove
 
 		Main.finalActions();
 		System.exit(0);

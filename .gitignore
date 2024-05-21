@@ -8,3 +8,7 @@ tmp.txt
 /.vscode
 yices
 /output_differences
+/output_timings
+*.py
+*.txt
+/flataArchived

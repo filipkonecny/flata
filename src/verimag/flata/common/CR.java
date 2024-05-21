@@ -472,6 +472,9 @@ public class CR {
 		GLPK.glp_term_out(GLPK.GLP_OFF);
 	}
 
+	public static void initFLataJavaSMT(String solver) {
+		flataJavaSMT = new FlataJavaSMT(solver);
+	}
 	public static void initFLataJavaSMT() {
 		flataJavaSMT = new FlataJavaSMT();
 	}
