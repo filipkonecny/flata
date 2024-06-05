@@ -1,7 +1,5 @@
 package verimag.flata.common;
 
-import java.util.LinkedList;
-
 import org.sosy_lab.common.ShutdownNotifier;
 import org.sosy_lab.common.configuration.Configuration;
 import org.sosy_lab.common.log.LogManager;
@@ -40,7 +38,7 @@ public class FlataJavaSMT {
         Solvers chosenSolver = Solvers.valueOf(s);
 
         if (chosenSolver == null) {
-            System.out.println("Invalid solver, exiting");
+            System.out.println("Invalid solver, valid solvers: " + ifmSupport + ", exiting");
             System.exit(1);
         }
 

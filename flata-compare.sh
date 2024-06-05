@@ -13,6 +13,13 @@ declare -A BENCHMARKS_DIRS=(
     ["recur"]="./flataProvidedBenchmarks/benchmarks-recur"
 )
 
+declare -A SCRIPTS=(
+    ["reach"]="./flata-reachability.sh"
+    ["term"]="./flata-termination.sh"
+    ["sil"]="./flata-sil.sh"
+    ["recur"]="./flata-reachability.sh" # Using the reachability script for recursivity benchmarks
+)
+
 # Output directory for differences
 DIFF_OUTPUT_DIR="./output_differences/"
 mkdir -p "$DIFF_OUTPUT_DIR"
@@ -61,8 +68,10 @@ run_program() {
 for category in "${!BENCHMARKS_DIRS[@]}"; do
     echo "Processing category: $category"
     BENCHMARKS_DIR="${BENCHMARKS_DIRS[$category]}"
-    SCRIPT_NAME="flata-reachability.sh"  # Assuming the same script name for simplicity
+    SCRIPT_NAME="${SCRIPTS[$category]}"  # Assuming the same script name for simplicity
     TIMEOUT_DURATION=120
+
+    echo "Running benchmarks in $BENCHMARKS_DIR with $SCRIPT_NAME..."
 
     # Get the total number of benchmark files
     total_files=$(find "$BENCHMARKS_DIR" -type f -name "*.nts" | wc -l)
