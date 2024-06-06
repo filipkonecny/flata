@@ -37,7 +37,6 @@
     <property name="glpk.jar" value="${lib.dir}/glpk-java-4.47.jar" />
     <property name="nts.jar" value="${lib.dir}/nts.jar" />
     <property name="prestaf.jar" value="${lib.dir}/prestaf.jar" />
-    <property name="yices.jar" value="${lib.dir}/yicesapijava.jar" />
 
     <!-- other properties -->
     <property name="dist.jar" value="${dist.dir}/flata.jar" />
@@ -73,13 +72,6 @@
             <include name="**/*.java" />
             <!-- <compilerarg value="-Xlint:all"/> -->
             <classpath refid="compile.class.path"/>
-            <!-- <classpath>
-                <pathelement location="${antlr.jar}" />
-                <pathelement location="${glpk.jar}" />
-                <pathelement location="${nts.jar}" />
-                <pathelement location="${prestaf.jar}" />
-                <pathelement location="${yices.jar}" />
-            </classpath> -->
         </javac>
     </target>
 
@@ -113,7 +105,7 @@
             <zipfileset src="${glpk.jar}" />
             <zipfileset src="${nts.jar}" />
             <zipfileset src="${prestaf.jar}" />
-            <zipfileset src="${yices.jar}" />
+            <!-- TODO: add whole library? -->
         </jarjar>
     </target>
 

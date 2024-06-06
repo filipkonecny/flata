@@ -12,7 +12,6 @@ import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 import verimag.flata.common.Label;
 import verimag.flata.common.Parameters;
-import verimag.flata.common.YicesAnswer;
 import verimag.flata.presburger.*;
 
 public class CATransition extends BaseArc implements java.lang.Comparable<CATransition> {
@@ -574,28 +573,6 @@ public class CATransition extends BaseArc implements java.lang.Comparable<CATran
 		}
 	}
 
-	// TODO: remove
-	public static void toSBYicesListPart(Collection<CATransition> col, IndentedWriter iw) {
-
-		if (col.size() == 1) {
-
-			col.iterator().next().labAsRel().toSBYicesAsConj(iw);
-
-		} else {
-
-			iw.writeln("(or");
-			iw.indentInc();
-
-			for (CATransition t : col) {
-				t.labAsRel().toSBYicesAsConj(iw);
-			}
-
-			iw.indentDec();
-			iw.writeln(")");
-
-		}
-	}
-
 	public boolean isFASTCompatible(int v_cnt) {
 		return labAsRel().isFASTCompatible(v_cnt);
 	}
@@ -987,53 +964,6 @@ public class CATransition extends BaseArc implements java.lang.Comparable<CATran
 		BooleanFormula formula = fjsmt.getBfm().and(formulaAND, formulaNOR);
 
 		return fjsmt.isSatisfiable(formula);
-
-		// TODO: remove
-		// StringWriter sw = new StringWriter();
-		// IndentedWriter iw = new IndentedWriter(sw);
-
-		// iw.writeln("(reset)");
-
-		// // define
-		// Set<Variable> vars = new HashSet<Variable>();
-		// tNew.labAsRel().refVars(vars);
-		// for (CATransition t : tOld) {
-		// 	t.labAsRel().refVars(vars);
-		// }
-		// CR.yicesDefineVars(iw, vars);
-
-		// iw.writeln("(assert");
-		// iw.indentInc();
-		
-		// iw.writeln("(and");
-		// iw.indentInc();
-		
-		// LinearRel lrnew = tNew.labAsRel().toLinearRel();
-		// lrnew.toSBYicesAsConj(iw);
-		
-		// iw.writeln("(not (or");
-		// iw.indentInc();
-		
-		// for (CATransition t : tOld) {
-		// 	LinearRel lr = t.labAsRel().toLinearRel();
-		// 	lr.toSBYicesAsConj(iw);
-		// }
-		
-		// iw.writeln("))"); // not or
-		// iw.indentDec();
-		
-		// iw.writeln(")"); // and
-		// iw.indentDec();
-		
-		// iw.indentDec();
-		// iw.writeln(")"); // assert
-
-		// iw.writeln("(check)");
-
-		// StringBuffer yc = new StringBuffer();
-		// YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
-
-		// return Answer.createFromYicesUnsat(ya);
 	}
 
 	// split to more accelerable transitions 

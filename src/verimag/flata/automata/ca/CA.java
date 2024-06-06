@@ -1070,48 +1070,48 @@ public class CA extends BaseGraph {
 	////////////////////////////////////////////////////////////////////////////////
 
 	// TODO: convert, remove, never used??
-	private static YicesAnswer isIncluded(int inx, CATransition[] tt, BitSet bs, Collection<String> vars) {
+	// private static YicesAnswer isIncluded(int inx, CATransition[] tt, BitSet bs, Collection<String> vars) {
 
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
+	// 	StringWriter sw = new StringWriter();
+	// 	IndentedWriter iw = new IndentedWriter(sw);
 		
-		iw.writeln("(reset)");
+	// 	iw.writeln("(reset)");
 		
-		CR.yicesDefineVarNames(iw, vars);
+	// 	CR.yicesDefineVarNames(iw, vars);
 
-		iw.writeln("(assert");
-		iw.indentInc();
+	// 	iw.writeln("(assert");
+	// 	iw.indentInc();
 		
-		iw.writeln("(and");
-		iw.indentInc();
+	// 	iw.writeln("(and");
+	// 	iw.indentInc();
 		
-		iw.writeln("(not (or");
-		iw.indentInc();
+	// 	iw.writeln("(not (or");
+	// 	iw.indentInc();
 		
-		iw.writeln("false");
+	// 	iw.writeln("false");
 		
-		for (int i = 0; i < tt.length; i ++) {
-			if (bs.get(i) || i == inx)
-				continue;
+	// 	for (int i = 0; i < tt.length; i ++) {
+	// 		if (bs.get(i) || i == inx)
+	// 			continue;
 			
-			tt[i].rel().toSBYicesAsConj(iw);
-		}
+	// 		tt[i].rel().toSBYicesAsConj(iw);
+	// 	}
 		
-		iw.indentDec(); // not or
-		iw.writeln("))");
+	// 	iw.indentDec(); // not or
+	// 	iw.writeln("))");
 		
-		tt[inx].rel().toSBYicesAsConj(iw);
+	// 	tt[inx].rel().toSBYicesAsConj(iw);
 		
-		iw.indentDec(); // and
-		iw.writeln(")");
+	// 	iw.indentDec(); // and
+	// 	iw.writeln(")");
 		
-		iw.indentDec(); // assert
-		iw.writeln(")");
+	// 	iw.indentDec(); // assert
+	// 	iw.writeln(")");
 		
-		iw.writeln("(check)");
+	// 	iw.writeln("(check)");
 		
-		return CR.isSatisfiableYices(sw.getBuffer(), new StringBuffer());
-	}
+	// 	return CR.isSatisfiableYices(sw.getBuffer(), new StringBuffer());
+	// }
 	
 
 	////////////////////////////////////////////////////////////////////////////////

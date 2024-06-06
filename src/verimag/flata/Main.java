@@ -15,8 +15,6 @@ import verimag.flata.recur_bounded.SccFinder;
 public class Main {
 
 	public static void initActions() {
-		// TODO: remove
-		CR.launchYices();
 		if (Parameters.isOnParameter(Parameters.SOLVER)) {
 			CR.initFLataJavaSMT(Parameters.getParameter(Parameters.SOLVER).arguments()[0]);
 		} else {
@@ -33,8 +31,6 @@ public class Main {
 	private static PrintStream out;
 	private static long time_start;
 	public static void finalActions() {
-		// TODO: remove
-		CR.terminateYices();
 		
 		Parameters.finalActions();
 		
@@ -317,8 +313,6 @@ public class Main {
 			System.out.println("FW in Join: "+(float)PartitionsJoin.TIME / 1000+" s");
 		}
 		
-		System.out.println(CR.flataJavaSMT.getSolverCalls() + ", " + CR.yices_calls); // TODO: remove
-
 		Main.finalActions();
 		System.exit(0);
 	}

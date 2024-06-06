@@ -20,9 +20,6 @@ public class ConstProp {
 		}
 		
 		File inputFile = new File(args[i+0]);
-		
-		// TODO: remove
-		CR.launchYices();
 
 		CR.initFLataJavaSMT();
 		

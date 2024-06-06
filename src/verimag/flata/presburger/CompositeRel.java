@@ -1600,23 +1600,6 @@ public class CompositeRel extends RelationCommon implements Label {
 
 		return fjsmt.getBfm().and(formulas);
 	}
-
-	// TODO: remove
-	@Override
-	public void toSBYicesAsConj(IndentedWriter iw) {
-		toSBYicesAsConj(iw, null, null);
-	}
-	public void toSBYicesAsConj(IndentedWriter iw, String s_u, String s_p) {
-		iw.writeln("(and");
-		iw.indentInc();
-
-		iw.writeln("true");
-		for (Relation r : this.rels)
-			r.toSBYicesAsConj(iw, s_u, s_p);
-
-		iw.indentDec();
-		iw.writeln(")");
-	}
 	
 	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate) {
 		LinkedList<BooleanFormula> formulas = new LinkedList<>();
@@ -1624,12 +1607,6 @@ public class CompositeRel extends RelationCommon implements Label {
 			formulas.addAll(r.toJSMTList(fjsmt, negate));
 		}
 		return formulas;
-	}
-
-	// TODO: remove
-	public void toSBYicesList(IndentedWriter iw, boolean negate) {
-		for (Relation r : this.rels)
-			r.toSBYicesList(iw, negate);
 	}
 
 	private void extendBy(int nVars, int nRels) {
@@ -1934,62 +1911,7 @@ public class CompositeRel extends RelationCommon implements Label {
 
 		BooleanFormula formula = fjsmt.getBfm().and(formulasAND);
 
-		return fjsmt.isSatisfiable(formula, true);
-
-		// TODO: remove
-		// StringWriter sw = new StringWriter();
-		// IndentedWriter iw = new IndentedWriter(sw);
-
-		// iw.writeln("(reset)");
-
-		// // define
-		// CR.yicesDefineVarsS(iw, vars);
-
-		// iw.writeln("(assert");
-		// iw.indentInc();
-
-		// // other \subseteq this
-		// iw.writeln("(and");
-		// iw.indentInc();
-		// r.toSBYicesList(iw, false); // not negated
-
-		// for (CompositeRel rr : rels) {
-		// 	iw.writeln("(or");
-		// 	iw.indentInc();
-		// 	rr.toSBYicesList(iw, true); // negated
-	
-		// 	iw.indentDec();
-		// 	iw.writeln(")"); // or
-		// }
-		// iw.indentDec();
-		// iw.writeln(")"); // and
-
-		// iw.indentDec();
-		// iw.writeln(")"); // assert
-
-		// iw.writeln("(check)");
-
-		
-		// //System.out.println("INCL LHS: "+r);
-		// //System.out.print("INCL RHS: ");
-		// //for (CompositeRel rr : rels) {
-		// //	System.out.println("  "+rr);
-		// //}
-		// //System.out.println("YICES INPUT: "+sw);
-		// //System.out.println("CALLING YICES");
-		
-		
-		// StringBuffer yc = new StringBuffer();
-		// YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
-		
-		
-		// //System.out.println("YICES RETURNED");
-		// //System.out.println("YICES OUTPUT: "+ya);
-		
-
-		// // unsat implies that relation is included
-		// return Answer.createFromYicesUnsat(ya);
-		
+		return fjsmt.isSatisfiable(formula, true);		
 	}
 	
 	// assumption: relation is Linear

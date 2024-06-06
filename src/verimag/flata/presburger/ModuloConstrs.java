@@ -109,56 +109,16 @@ public class ModuloConstrs {
 		return formulas;
 	}
 
-	// TODO: remove
-	public void toSBYicesList(IndentedWriter iw, String s_u, String s_p) {
-		toSBYicesList(iw,false,s_u,s_p);
-	}
-	public void toSBYicesList(IndentedWriter iw, boolean negate) {
-		toSBYicesList(iw, negate, null, null);
-	}
-	public void toSBYicesList(IndentedWriter iw) {
-		toSBYicesList(iw, false, null, null);
-	}
-	public void toSBYicesList(IndentedWriter iw, boolean negate, String s_u, String s_p) {
-		
-		if (this.simpleContradiction) {
-			iw.writeln(negate? "true" : "false");
-			return;
-		}
-		
-		for (ModuloConstr mc : modConstrs_inter)
-			mc.toSBYicesListPart(iw,negate,s_u,s_p);
-	}
-
 	public BooleanFormula toJSMTConstrAnd(FlataJavaSMT fjsmt) {
 		return toJSMTAsConj(fjsmt, null, null);
 	}
 
-	// TODO: remove
-	public void toSBYicesConstrsAnd(IndentedWriter iw) {
-		toSBYicesAsConj(iw, null, null);
-	}
-
 	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p) {
 		if (modConstrs_inter.size() == 0) {
-			return fjsmt.getBfm().makeTrue(); // TODO: check if correct
+			return fjsmt.getBfm().makeTrue();
 		}
 
 		return fjsmt.getBfm().and(toJSMTList(fjsmt, s_u, s_p));
-	}
-
-	// TODO: remove
-	public void toSBYicesAsConj(IndentedWriter iw, String s_u, String s_p) {
-		if (modConstrs_inter.size() == 0)
-			return;
-		
-		iw.writeln("(and");
-		iw.indentInc();
-		
-		toSBYicesList(iw, s_u, s_p);
-		
-		iw.indentDec();
-		iw.writeln(")");
 	}
 
 	public void variables(Collection<Variable> aVars) {

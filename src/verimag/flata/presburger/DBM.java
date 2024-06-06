@@ -1295,8 +1295,6 @@ public class DBM {
 			LinearTerm bndTerm = new LinearTerm(null, bound);
 			IntegerFormula bndFormula = bndTerm.toJSMT(fjsmt, s_u, s_p);
 
-			// TODO: check if this is an OK solution
-			// TODO: break out into its own function ??
 			BiFunction<IntegerFormula, IntegerFormula, BooleanFormula> comparisonFunction;
 			if (isEq) {
 				if (negate) {
@@ -1324,36 +1322,12 @@ public class DBM {
 			}
 		}
 
-		// TODO: remove
-		public void toStringBufYices(IndentedWriter iw, String s_u, String s_p, boolean negate) {
-			
-			LinearTerm bndTerm = new LinearTerm(null,bound);
-			
-			String eq = (negate)? "/=" : "=";
-			String leq = (negate)? ">" : "<=";
-			
-			if (lt1 != null && lt2 != null) {
-				iw.writeln("("+(isEq? eq : leq)+" (+ "+lt1.toSBYices(s_u,s_p)+" "+lt2.toSBYices(s_u,s_p)+") "+bndTerm.toSBYices(s_u,s_p)+")");
-			} else {
-				StringBuffer tmp = (lt1 == null)? lt2.toSBYices(s_u,s_p) : lt1.toSBYices(s_u,s_p);
-				iw.writeln("("+(isEq? eq : leq)+" "+tmp+" "+bndTerm.toSBYices(s_u,s_p)+")");
-			}
-			
-		}
-
 		public static LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p, Collection<OctConstrLeqEq> aCol) {
 			LinkedList<BooleanFormula> formulas = new LinkedList<>();
 			for (OctConstrLeqEq oc : aCol) {
 				formulas.add(oc.toJSMT(fjsmt, negate, s_u, s_p));
 			}
 			return formulas;
-		}
-
-		// TODO: remove
-		public static void toStringBufYicesList(IndentedWriter iw, Collection<OctConstrLeqEq> aCol, String suf_unp, String suf_p, boolean negate) {
-			for (OctConstrLeqEq oc : aCol) {
-				oc.toStringBufYices(iw, suf_unp, suf_p, negate);
-			}
 		}
 	}
 
@@ -1381,24 +1355,10 @@ public class DBM {
 		return OctConstrLeqEq.toJSMTList(fjsmt, negate, s_u, s_p, col);
 	}
 
-	// TODO: remove
-	public void toStringBufYicesList_dbc(IndentedWriter iw, String suf_unp, String suf_p, boolean negate, Variable[] varsOrig) {
-		Collection<OctConstrLeqEq> col;
-		col = dbMat2OctConstrsLeqEq(varsOrig);
-		OctConstrLeqEq.toStringBufYicesList(iw, col, suf_unp, suf_p, negate);
-	}
-
 	public LinkedList<BooleanFormula> toJSMTList_oct(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p, Variable[] varsOrig) {
 		Collection<OctConstrLeqEq> col = octMat2OctConstrsLeqEq(varsOrig);
 
 		return OctConstrLeqEq.toJSMTList(fjsmt, negate, s_u, s_p, col);
-	}
-
-	// TODO: remove
-	public void toStringBufYicesList_oct(IndentedWriter iw, Variable[] vars, String suf_unp, String suf_p, boolean negate) {
-		Collection<OctConstrLeqEq> col;
-		col = octMat2OctConstrsLeqEq(vars);
-		OctConstrLeqEq.toStringBufYicesList(iw, col, suf_unp, suf_p, negate);
 	}
 
 	private boolean areInverse(Field f1, Field f2) {

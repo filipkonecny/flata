@@ -15,7 +15,7 @@ declare -A BENCHMARKS_DIRS=(
 
 declare -A SCRIPTS=(
     ["reach"]="./flata-reachability.sh"
-    ["term"]="./flata-termination.sh"
+    # ["term"]="./flata-termination.sh"
     ["sil"]="./flata-sil.sh"
     ["recur"]="./flata-reachability.sh" # Using the reachability script for recursivity benchmarks
 )

@@ -12,8 +12,6 @@ import verimag.flata.presburger.Relation.RelType;
 public abstract class RelationCommon {
 
 	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt);
-	// TODO: remove
-	public abstract void toSBYicesAsConj(IndentedWriter iw);
 	public abstract void update(ConstProps cps);
 	public abstract boolean simpleContradiction();
 	public abstract Answer satisfiable();

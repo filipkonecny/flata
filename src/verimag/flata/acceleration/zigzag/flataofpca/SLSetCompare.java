@@ -1,6 +1,5 @@
 package verimag.flata.acceleration.zigzag.flataofpca;
 
-import java.io.StringWriter;
 import java.util.LinkedList;
 
 import org.sosy_lab.java_smt.api.BooleanFormula;
@@ -10,8 +9,6 @@ import verimag.flata.acceleration.zigzag.*;
 import verimag.flata.common.Answer;
 import verimag.flata.common.CR;
 import verimag.flata.common.FlataJavaSMT;
-import verimag.flata.common.IndentedWriter;
-import verimag.flata.common.YicesAnswer;
 
 // PresTAF
 import application.*;
@@ -57,68 +54,8 @@ public class SLSetCompare {
 		return fjsmt.getQfm().forall(fjsmt.getIfm().makeVariable("k"), formulaAND);
 	}
 
-	// TODO: remove
-	private static void toSBYices(IndentedWriter iw, LinSet ls, String k, String n, String dummy) { 		
-		Point base = ls.getBase();
-		Point gen = ls.getGenerator();
-		
-		int a = base.getLength();
-		int b = base.getWeight();
-		int c = (gen == null)? 0 : gen.getLength();
-		int d = (gen == null)? 0 : gen.getWeight();
-		
-		iw.writeln("(= "+n+" (+ "+a+" (* "+k+" "+c+")))");
-		iw.writeln("(<= "+dummy+" (+ "+b+" (* "+k+" "+d+")))");
-	}
-	// TODO: remove
-	private static void toSBYices(IndentedWriter iw, SLSet sls, String n, String dummy) {
-		
-		if (sls == null || sls.empty()) {
-			iw.writeln("true");
-			return;
-		}
-		
-		String k = "k";
-		
-		// ########################################
-		iw.writeln("(forall ("+k+"::int)");
-		iw.indentInc();
-		
-		iw.writeln("(and ");
-		iw.indentInc();
-		
-		for (LinSet ls : sls.getLinearSets()) {
-			iw.writeln("(=> ");
-			iw.indentInc();
-			
-			toSBYices(iw,ls,k,n,dummy);
-			
-			iw.indentDec();
-			iw.writeln(")"); // =>
-		}
-		
-		iw.indentDec();
-		iw.writeln(")"); // and
-		
-		iw.indentDec();
-		iw.writeln(")"); // forall
-		
-	}
-
 	public static BooleanFormula implicationJSMT(FlataJavaSMT fjsmt, SLSet sls1, SLSet sls2, IntegerFormula n, IntegerFormula dummy) {
 		return fjsmt.getBfm().implication(toJSMT(fjsmt, sls1, n, dummy), toJSMT(fjsmt, sls2, n, dummy));
-	}
-
-	// TODO: remove
-	public static void implicationYices(IndentedWriter iw, SLSet sls1, SLSet sls2, String n, String dummy) {
-		iw.writeln("(=> ");
-		iw.indentInc();
-		
-		toSBYices(iw,sls1,n,dummy);
-		toSBYices(iw,sls2,n,dummy);
-		
-		iw.indentDec();
-		iw.writeln(")"); // =>
 	}
 
 	public static Answer equalJSMT(SLSet sls1, SLSet sls2) {
@@ -139,64 +76,6 @@ public class SLSetCompare {
 
 		// End AND
 		return fjsmt.isSatisfiable(fjsmt.getBfm().and(geq, nand));
-	}
-
-	// TODO: remove
-	public static YicesAnswer equalYices(SLSet sls1, SLSet sls2) {
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-		
-		//String k = "k";
-		String n = "n";
-		String dummy = "x";
-		
-		iw.writeln("(reset)\n");
-		//iw.writeln("(define "+k+"::int)");
-		iw.writeln("(define "+n+"::int)");
-		if (bb) iw.writeln("(define "+dummy+"::int)");
-		
-		iw.writeln("(assert ");
-		iw.indentInc();
-		
-		iw.writeln("(and ");
-		iw.indentInc();
-		
-		iw.writeln("(>= "+n+" 1)");
-		
-		iw.writeln("(not ");
-		iw.indentInc();
-		
-		iw.writeln("(and ");
-		iw.indentInc();
-		
-		implicationYices(iw,sls1,sls2,n,dummy);
-		implicationYices(iw,sls2,sls1,n,dummy);
-		
-		iw.indentDec();
-		iw.writeln(")"); // and
-		
-		iw.indentDec();
-		iw.writeln(")"); // not
-		
-		iw.indentDec();
-		iw.writeln(")"); // and
-		
-		iw.indentDec();
-		iw.writeln(")"); // assert
-		
-		iw.writeln("(set-evidence! true)"); // ?? Why do they need model, its never used??
-		iw.writeln("(check)");
-		
-		StringBuffer sb = sw.getBuffer();
-		StringBuffer sb_core = new StringBuffer();
-		
-		YicesAnswer a = CR.isSatisfiableYices(sb, sb_core);
-
-		if (a == YicesAnswer.eYicesSAT) {
-			//System.out.println(sb);
-		}
-		
-		return a;
 	}
 
 	// ##########################################################################

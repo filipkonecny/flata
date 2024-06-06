@@ -405,36 +405,6 @@ public class LinearConstr extends HashMap<Variable, LinearTerm> implements Const
 		return fjsmt.getIfm().sum(terms);
 	}
 
-	// TODO: remove
-	public StringBuffer toSBYices(String s_u, String s_p) {
-		StringBuffer sb = new StringBuffer();
-		
-		Collection<LinearTerm> values = this.values();
-		Iterator<LinearTerm> iter = values.iterator();
-		int size = values.size();
-		
-		if (size == 1) {
-			return iter.next().toSBYices(s_u, s_p);
-		}
-		
-		sb.append("(+");
-		//int i = 1;
-		while (iter.hasNext()) {
-			LinearTerm t = iter.next();
-//			if (i != size) {
-//				sb.append(t.toSBYices(s_u,s_p));
-//			} else {
-				sb.append(" "+t.toSBYices(s_u,s_p));
-//			}
-//			++i;
-		}
-		sb.append(")");
-//		for (i = 1; i < size; ++i)
-//			sb.append(")");
-
-		return sb;
-	}
-
 	/**
 	 * adds the specified linear term to this constraint. If this linear
 	 * constraint contains a term of the same variable as the specified term, it

@@ -131,18 +131,13 @@ public abstract class Relation extends RelationCommon {
 	public abstract ModuloRel toModuloRel();
 //	public abstract ModExistsRel toModExists();
 	
+// produces a conjunction of constraints
 	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt);
-	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p);
-	public abstract LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate);
-
-	// TODO: remove
-	// produces a conjunction of constraints
-	public abstract void toSBYicesAsConj(IndentedWriter aIW);
 	// same as above, just no primes are used:
 	//   unprimed variables suffixed with suf_unp
 	//   primed variables suffixed with suf_p
-	public abstract void toSBYicesAsConj(IndentedWriter aIW, String s_u, String s_p);
-	public abstract void toSBYicesList(IndentedWriter iw, boolean negate);
+	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p);
+	public abstract LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate);
 	// all referenced variables
 	
 	public abstract boolean tautology();
@@ -412,26 +407,26 @@ public abstract class Relation extends RelationCommon {
 	}
 	
 	// TODO: convert
-	public static void toSBYicesAsDisj(Collection<Relation> col, IndentedWriter iw) {
+	// public static void toSBYicesAsDisj(Collection<Relation> col, IndentedWriter iw) {
 
-		if (col.size() == 1) {
+	// 	if (col.size() == 1) {
 
-			col.iterator().next().toSBYicesAsConj(iw);
+	// 		col.iterator().next().toSBYicesAsConj(iw);
 
-		} else {
+	// 	} else {
 
-			iw.writeln("(or");
-			iw.indentInc();
+	// 		iw.writeln("(or");
+	// 		iw.indentInc();
 
-			for (Relation t : col) {
-				t.toSBYicesAsConj(iw);
-			}
+	// 		for (Relation t : col) {
+	// 			t.toSBYicesAsConj(iw);
+	// 		}
 
-			iw.indentDec();
-			iw.writeln(")");
+	// 		iw.indentDec();
+	// 		iw.writeln(")");
 
-		}
-	}
+	// 	}
+	// }
 	
 	public static void checkmintype(Relation rel) {
 		Relation min = Relation.toMinType(rel);

@@ -642,23 +642,8 @@ public class DBRel extends Relation implements DBOct {
 		return fjsmt.getBfm().and(formulasAND);
 	}
 
-	// TODO: remove
-	public void toSBYicesAsConj(IndentedWriter aIW, String suf_unp, String suf_p) {
-		CR.yicesAndStart(aIW);
-		dbm.toStringBufYicesList_dbc(aIW, suf_unp, suf_p, false, varsOrig);
-		CR.yicesAndEnd(aIW);
-	}
-	public void toSBYicesAsConj(IndentedWriter aIW) {
-		toSBYicesAsConj(aIW, null, null);
-	}
-
 	public LinkedList<BooleanFormula>  toJSMTList(FlataJavaSMT fjsmt, boolean negate) {
 		return dbm.toJSMTList_dbc(fjsmt, false, null, null, varsOrig);
-	}
-
-	// TODO: remove
-	public void toSBYicesList(IndentedWriter iw, boolean negate) {
-		dbm.toStringBufYicesList_dbc(iw, null, null, negate, varsOrig);
 	}
 	
 	public void refVars(Collection<Variable> aCol) {

@@ -164,33 +164,6 @@ public class LinearTerm implements java.lang.Comparable<LinearTerm> {
 			return fjsmt.getIfm().multiply(coeffFormula, fjsmt.getIfm().makeNumber(1));
 		}
 	}
-
-	// TODO: remove
-	public StringBuffer toSBYices(String s_u, String s_p) {
-		StringBuffer sb = new StringBuffer();
-		String xx;
-		if (variable == null) {
-			//xx = "";
-			sb.append(coeff);
-			return sb;
-		} else if (s_u == null) {
-			xx = this.variable.name();
-		} else {
-			if (variable.isPrimed())
-				xx = variable.getUnprimedName()+s_p;
-			else
-				xx = variable.name()+s_u;
-		}
-		//String coefStr = (coeff > 0)? ""+coeff : "(- 0 "+Math.abs(coeff)+")";
-		String coefStr = ""+coeff;
-		if (this.variable!=null) {
-			xx = CR.yicesVarName(xx);
-			sb.append("(* ").append(coefStr).append(" ").append(xx).append(")");
-		} else {
-			sb.append("(* ").append(coefStr).append(" 1)");
-		}
-		return sb;
-	}
 	
 	public static StringBuffer toSBtermList(Collection<LinearTerm> aCol) {
 		StringBuffer sb = new StringBuffer();

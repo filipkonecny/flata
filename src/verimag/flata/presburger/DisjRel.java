@@ -1,6 +1,5 @@
 package verimag.flata.presburger;
 
-import java.io.StringWriter;
 import java.util.*;
 
 import org.sosy_lab.java_smt.api.BooleanFormula;
@@ -9,8 +8,6 @@ import verimag.flata.Closure;
 import verimag.flata.common.Answer;
 import verimag.flata.common.CR;
 import verimag.flata.common.FlataJavaSMT;
-import verimag.flata.common.IndentedWriter;
-import verimag.flata.common.YicesAnswer;
 import nts.parser.*;
 
 public class DisjRel {
@@ -521,68 +518,6 @@ public class DisjRel {
 			BooleanFormula formula = fjsmt.getBfm().not(fjsmt.getBfm().implication(formulaOR1, formulaOR2));
 
 			return fjsmt.isSatisfiable(formula, true);
-
-			// TODO: remove
-			// StringWriter sw = new StringWriter();
-			// IndentedWriter iw = new IndentedWriter(sw);
-
-			// iw.writeln("(reset)");
-
-			// // define
-			// Set<Variable> vars = new HashSet<Variable>();
-			// Set<Variable> aux = this.refVarsAsUnp();
-			// aux.addAll(other.refVarsAsUnp());
-			// for (Variable v : aux) {
-			// 	vars.add(v);
-			// 	vars.add(v.getCounterpart());
-			// }
-			// CR.yicesDefineVars(iw, vars);
-
-			// iw.writeln("(assert");
-			// iw.indentInc();
-			
-			// iw.writeln("(not (=>");
-			// iw.indentInc();
-
-			// iw.writeln("(or");
-			// iw.indentInc();
-			
-			// if (disjuncts.size() == 0) {
-			// 	iw.writeln("false");
-			// } else {
-			// 	for (CompositeRel r : this.disjuncts) {
-			// 		r.toModuloRel().toSBYicesAsConj(iw);
-			// 	}
-			// }
-
-			// iw.indentDec();
-			// iw.writeln(")"); // or
-			// iw.writeln("(or");
-			// iw.indentInc();
-			
-			// if (other.disjuncts.size() == 0) {
-			// 	iw.writeln("false");
-			// } else {
-			// 	for (CompositeRel r : other.disjuncts) {
-			// 		r.toModuloRel().toSBYicesAsConj(iw);
-			// 	}
-			// }
-
-			// iw.indentDec();
-			// iw.writeln(")"); // or
-
-			// iw.indentDec();
-			// iw.writeln("))"); // not =>
-
-			// iw.indentDec();
-			// iw.writeln(")"); // assert
-
-			// iw.writeln("(check)");
-
-			// StringBuffer yc = new StringBuffer();
-			// YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
-			
-			// return Answer.createFromYicesUnsat(ya);
 		}
 	}
 	
