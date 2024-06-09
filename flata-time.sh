@@ -28,6 +28,17 @@ declare -A SCRIPTS=(
 TIMINGS_OUTPUT_DIR="./output_timings/"
 mkdir -p "$TIMINGS_OUTPUT_DIR"
 
+# Function to parse the running time from the output file
+parse_running_time() {
+    local output_file="$1"
+    local running_time=$(grep -Eo 'running time(\s\(total\))?: [0-9]+\.[0-9]+s' "$output_file" | tail -1 | grep -Eo '[0-9]+\.[0-9]+')
+    if [ -z "$running_time" ]; then
+        echo "\"T/O\""
+    else
+        LC_NUMERIC=C printf "%.2f" "$running_time"
+    fi
+}
+
 # Function to execute a version of the program with timeout and timing
 run_program() {
     local program_dir="$1"
@@ -56,7 +67,8 @@ run_program() {
             solver="yices1"
         fi
         echo "Timeout: Processing of $benchmark with solver $solver exceeded $timeout_duration seconds."
-        echo "999" > "$time_file"  # Indicating a timeout as maximum time
+        echo "\"T/O\"" > "$time_file"  # Indicating a timeout as maximum time
+        echo "\"T/O\"" > "$output_file"  # Indicating a timeout as maximum time
     fi
 }
 
@@ -87,8 +99,12 @@ for category in "${!BENCHMARKS_DIRS[@]}"; do
         # Execute old version of the script with timeout and timing
         run_program "$OLD_VERSION_DIR" "$SCRIPT_NAME" "$benchmark" "$old_output" "$TIMEOUT_DURATION" "$old_time" ""
 
-        # Read timing for old version
-        old_duration=$(cat "$old_time")
+        # Read timing for old version (total time and own measured time)
+        old_total_duration=$(cat "$old_time")
+        old_measured_duration=$(parse_running_time "$old_output")
+        if [ "$old_total_duration" != "\"T/O\"" ]; then
+            old_total_duration=$(LC_NUMERIC=C printf "%.2f" "$old_total_duration")
+        fi
 
         # Initialize an array to hold new durations for each solver
         new_durations=()
@@ -99,16 +115,20 @@ for category in "${!BENCHMARKS_DIRS[@]}"; do
             new_time=$(mktemp)
             run_program "$NEW_VERSION_DIR" "$SCRIPT_NAME" "$benchmark" "$new_output" "$TIMEOUT_DURATION" "$new_time" "$solver"
 
-            # Read timing for new version
-            new_duration=$(cat "$new_time")
-            new_durations+=(",\"$solver\": $new_duration")
+            # Read timing for new version (total time and own measured time)
+            new_total_duration=$(cat "$new_time")
+            new_measured_duration=$(parse_running_time "$new_output")
+            if [ "$new_total_duration" != "\"T/O\"" ]; then
+                new_total_duration=$(LC_NUMERIC=C printf "%.2f" "$new_total_duration")
+            fi
+            new_durations+=(",\"${solver}_total\": $new_total_duration, \"${solver}_measured\": $new_measured_duration")
 
             # Clean up temporary files
             rm "$new_output" "$new_time"
         done
 
         # Append results to JSON
-        echo "{\"benchmark\": \"$(basename "$benchmark")\", \"old_duration\": $old_duration ${new_durations[@]}}," >> "$json_output_file"
+        echo "{\"benchmark\": \"$(basename "$benchmark")\", \"old_total_duration\": $old_total_duration, \"old_measured_duration\": $old_measured_duration ${new_durations[@]}}," >> "$json_output_file"
 
         # Clean up temporary files
         rm "$old_output" "$old_time"
