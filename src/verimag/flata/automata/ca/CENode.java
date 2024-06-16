@@ -3,6 +3,9 @@ package verimag.flata.automata.ca;
 import java.io.StringWriter;
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
+
 import verimag.flata.common.*;
 import verimag.flata.presburger.*;
 
@@ -569,7 +572,6 @@ public class CENode {
 					
 				} else {
 					
-					StringBuffer core = null;
 					ReduceInfo ri_next = null;
 					
 					//int atoms = node.tb_hull_atoms.size();
@@ -578,17 +580,15 @@ public class CENode {
 						
 						ReduceInfo tmp = iter.next();
 						iter.remove();
-						
-						core = new StringBuffer();
-						YicesAnswer ya = node.processHullBase(tmp.t().rel(), core);
-						if (ya.isUnknown())
-							throw new RuntimeException("CE analysis: yices failed - unknown");
-						if (ya.isSat()) {
+
+						Answer a = node.processHullBase(tmp.t().rel());
+						if (a.isDontKnow()) {
+							throw new RuntimeException("CE analysis: solver failed - unknown");
+						}
+						if (a.isTrue()) {
 							ri_next = tmp;
 							break;
 						}
-						
-						
 					}
 					
 					if (ri_next == null) {
@@ -603,8 +603,7 @@ public class CENode {
 						tb_stack.pop();
 						
 					} else {
-						
-						node.tb_vals = node.getVals(1, CR.parseYicesCore(core));
+						node.tb_vals = node.getVals(1, CR.parseModelAssignments());
 						
 						CENode next = new CENode(ri_next, node.vars_unp, node.g, node.tb_vals[0], node.tb_vals[1]);
 						next.tb_cnt = 0;
@@ -641,76 +640,69 @@ public class CENode {
 		return ret;
 	}
 	
-	private void constrainVariablesUnpP(IndentedWriter iw, int n) {
+	private LinkedList<BooleanFormula> constrainVariablesUnpP(FlataJavaSMT fjsmt, int n) {
+		LinkedList<BooleanFormula> ret = new LinkedList<BooleanFormula>();
 		for (int i=0; i<vars_unp.length; i++) {
-			String v = CR.yicesVarName(vars_unp[i].name());
-			if (vi[i] != null)
-				iw.writeln("(= "+v+" "+vi[i]+")");
-			if (vo[i] != null)
-				iw.writeln("(= "+v+"' "+vo[i]+")");
+			
+			IntegerFormula v = fjsmt.getIfm().makeVariable(vars_unp[i].name());
+			IntegerFormula vp = fjsmt.getIfm().makeVariable(vars_unp[i].name() + "'"); // TODO: this little apostrophe messed ME UP!!!!!!!!!!
+
+			if (vi[i] != null) {
+				IntegerFormula vi = fjsmt.getIfm().makeNumber(this.vi[i]);
+				ret.add(fjsmt.getIfm().equal(v, vi));
+			}
+			if (vo[i] != null) {
+				IntegerFormula vo = fjsmt.getIfm().makeNumber(this.vo[i]);
+				ret.add(fjsmt.getIfm().equal(vp, vo));
+			}
 		}
+		return ret;
 	}
-	private void constrainVariables(IndentedWriter iw, int n) {
+
+	private LinkedList<BooleanFormula> constrainVariables(FlataJavaSMT fjsmt, int n) {
+		LinkedList<BooleanFormula> ret = new LinkedList<BooleanFormula>();
 		for (int i=0; i<vars_unp.length; i++) {
-			String v = CR.yicesVarName(vars_unp[i].name());
-			if (vi[i] != null)
-				iw.writeln("(= "+v+xx+0+" "+vi[i]+")");
-			if (vo[i] != null)
-				iw.writeln("(= "+v+xx+n+" "+vo[i]+")");
+			String var = vars_unp[i].name();
+			if (vi[i] != null) {
+				IntegerFormula v = fjsmt.getIfm().makeVariable(var+xx+0);
+				IntegerFormula vi = fjsmt.getIfm().makeNumber(this.vi[i]);
+				ret.add(fjsmt.getIfm().equal(v, vi));
+			}
+			if (vo[i] != null) {
+				IntegerFormula v = fjsmt.getIfm().makeVariable(var+xx+n);
+				IntegerFormula vo = fjsmt.getIfm().makeNumber(this.vo[i]);
+				ret.add(fjsmt.getIfm().equal(v, vo));
+			}
 		}
+		return ret;
 	}
-	private void assertAnd_begin(IndentedWriter iw) {
-		iw.writeln("(assert");
-		iw.indentInc();
-		
-		iw.writeln("(and");
-		iw.indentInc();
+
+	private LinkedList<BooleanFormula> begin(FlataJavaSMT fjsmt, Collection<String> varNames, int n) {
+		return begin(fjsmt, varNames, n, true, false);
 	}
-	private void assertAnd_end(IndentedWriter iw) {
-		iw.indentDec();
-		iw.writeln(")"); // and
-		
-		iw.indentDec();
-		iw.writeln(")"); // assert		
-	}
-	private void begin(IndentedWriter iw, Collection<String> varNames, int n) {
-		begin(iw, varNames, n, true, false);
-	}
-	private void begin(IndentedWriter iw, Collection<String> varNames, int n, boolean constrainVars, boolean usePrime) {
-		iw.writeln("(reset)\n");
-		iw.writeln("(set-evidence! true)");
-		iw.writeln();
-		CR.prepareYicesDeclaration(varNames, iw);
-		iw.writeln();
-		
-		assertAnd_begin(iw);
-		
+	private LinkedList<BooleanFormula> begin(FlataJavaSMT fjsmt, Collection<String> varNames, int n, boolean constrainVars, boolean usePrime) {
 		if (constrainVars) {
-			if (usePrime)
-				constrainVariablesUnpP(iw, n);
-			else
-				constrainVariables(iw, n);
+			if (usePrime) {
+				return constrainVariablesUnpP(fjsmt, n);
+			} else {
+				return constrainVariables(fjsmt, n);
+			}
 		}
+		return new LinkedList<BooleanFormula>();
 	}
-	private YicesAnswer end(IndentedWriter iw, StringWriter sw, StringBuffer core) {
-		assertAnd_end(iw);
-		
-		iw.writeln("(check)");
-		
-		//System.err.print("#");
-		return CR.isSatisfiableYices(sw.getBuffer(), core);
+
+	private Answer end(FlataJavaSMT fjsmt, LinkedList<BooleanFormula> formulas) {
+		return fjsmt.isSatisfiable(fjsmt.getBfm().and(formulas), false, true);
 	}
-	private Map<String,String> end_get_core(IndentedWriter iw, StringWriter sw) {
-	
-		StringBuffer core = new StringBuffer();
-		YicesAnswer ya = end(iw, sw, core);
-		if (!ya.isSat()) {
-			System.err.println(ya);
+	private Map<String,String> end_get_core(FlataJavaSMT fjsmt, LinkedList<BooleanFormula> formulas) {
+		Answer a = end(fjsmt, formulas);
+
+		if (!a.isTrue()) {
+			System.err.println(a);
 			throw new RuntimeException("CE analysis: internal error");
-			//System.err.println("[[["+this.ri.origSources.get(0).t.id()+"]]]");
 		}
 		
-		return CR.parseYicesCore(core);
+		return CR.parseModelAssignments();
 	}
 	
 	private void getStartingValues(CompositeRel r) {
@@ -721,14 +713,14 @@ public class CENode {
 		int n = 1;
 		Collection<String> varNames = getVariableNames(n);
 		
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-		
-		begin(iw, varNames, n, useCurrentAssignment, false);
-		
-		r.toSBYicesAsConj(iw, xx+"0", xx+"1");
-		
-		Map<String,String> mapping = end_get_core(iw, sw);
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
+
+		// Begin AND
+		LinkedList<BooleanFormula> formulasAND = begin(fjsmt, varNames, n, useCurrentAssignment, false);
+		formulasAND.add(r.toJSMTAsConj(fjsmt, xx+"0", xx+"1"));
+
+		// End AND
+		Map<String,String> mapping = end_get_core(fjsmt, formulasAND);
 		
 		for (int i=0; i<vars_unp.length; i++) {
 			String vname = vars_unp[i].name();
@@ -760,17 +752,16 @@ public class CENode {
 	private void processComposition_base(int n) {
 		
 		Collection<String> varNames = getVariableNames(n);
+
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
 		
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-		
-		begin(iw, varNames, n);
+		LinkedList<BooleanFormula> formulasAND = begin(fjsmt, varNames, n);
 		
 		switch (ri.op()) {
 		case COMPOSE: {
 			int i=0;
 			for (ReduceInfo source : ri.pred) {
-				source.t.rel().toSBYicesAsConj(iw, xx+i, xx+(i+1));
+				formulasAND.add(source.t.rel().toJSMTAsConj(fjsmt, xx+i, xx+(i+1)));
 				i++;
 			}
 			break;
@@ -778,15 +769,16 @@ public class CENode {
 		case CLOSURE:
 			ReduceInfo source = ri.pred.iterator().next();
 			// composition of source with itself n-times
-			for (int i=0; i<n; i++)
-				source.t.rel().toSBYicesAsConj(iw, xx+i, xx+(i+1));
+			for (int i=0; i<n; i++) {
+				formulasAND.add(source.t.rel().toJSMTAsConj(fjsmt, xx+i, xx+(i+1)));
+			}
 			break;
 		default:
 			throw new RuntimeException("CE analysis: internal error");
 		}
 		
-		Map<String,String> mapping = end_get_core(iw, sw);
-		
+		Map<String,String> mapping = end_get_core(fjsmt, formulasAND);
+
 		// not precise enough! -- detailed relation may assign some free values
 		//vals[0] = vi;
 		//vals[n] = vo;
@@ -816,28 +808,30 @@ public class CENode {
 		ClosureDisjunct cd = ri.t.rel().closure_disjunct();
 		String paramName = cd.parameter.name();
 		varNames.add(paramName);
+
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
 		
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
+		LinkedList<BooleanFormula> formulasAND = begin(fjsmt, varNames, n, true, true);
 		
-		begin(iw, varNames, n, true, true);
+		formulasAND.add(cd.periodic_param.toJSMTAsConj(fjsmt));
 		
-		cd.periodic_param.toSBYicesAsConj(iw);
+		IntegerFormula param = fjsmt.getIfm().makeVariable(paramName);
+		if (low >= 0) {
+			formulasAND.add(fjsmt.getIfm().greaterOrEquals(param, fjsmt.getIfm().makeNumber(low)));
+		}
+		if (up >= 0) {
+			formulasAND.add(fjsmt.getIfm().lessOrEquals(param, fjsmt.getIfm().makeNumber(up)));
+		}
 		
-		if (low >= 0)
-			iw.writeln("(>= "+CR.yicesVarName(paramName)+" "+low+")");
-		if (up >= 0)
-			iw.writeln("(<= "+CR.yicesVarName(paramName)+" "+up+")");
-		
-		StringBuffer core = new StringBuffer();
-		YicesAnswer ya = end(iw, sw, core);
-		if (ya.isUnknown())
-			throw new RuntimeException("CE analysis: yices - unknown");
-		else if (ya.isUnsat())
+		Answer a = end(fjsmt, formulasAND);
+		if (a.isDontKnow()) {
+			throw new RuntimeException("CE analysis: solver - unknown");
+		} else if (a.isFalse()) {
 			return -1;
+		}
 		
-		Map<String,String> mapping = CR.parseYicesCore(core);
-		return Integer.parseInt(mapping.get(paramName));
+		Map<String, String> mapping = CR.parseModelAssignments();
+		return  Integer.parseInt(mapping.get(paramName));
 	}
 	
 	private int getMinIterations() {
@@ -940,24 +934,19 @@ public class CENode {
 			}
 		}
 	}
-	
-	public YicesAnswer processHullBase(CompositeRel r) {
-		return processHullBase(r, new StringBuffer());
-	}
-	public YicesAnswer processHullBase(CompositeRel r, StringBuffer core) {
-		
-		int n = 1;
-		
-		Collection<String> varNames = getVariableNames(n);
-		
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-		
-		begin(iw, varNames, n);
-		
-		r.toSBYicesAsConj(iw, xx+"0", xx+"1");
 
-		return end(iw,sw,core);
+	public Answer processHullBase(CompositeRel r) {
+		int n = 1;
+
+		Collection<String> varNames = getVariableNames(n);
+
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
+
+		LinkedList<BooleanFormula> formulasAND = begin(fjsmt, varNames, n);
+
+		formulasAND.add(r.toJSMTAsConj(fjsmt, xx+"0", xx+"1"));
+
+		return end(fjsmt, formulasAND);
 	}
 	
 	private void base_spurious() {
@@ -1108,17 +1097,17 @@ public class CENode {
 					l.add(rri.t());
 					
 				} else {
-				
-					YicesAnswer ya = processHullBase(rri.t.rel());
 					
-					if (ya.isUnknown())
-						throw new RuntimeException("CE analysis: yices failed - unknown");
-					if (ya.isSat())
+					Answer a = processHullBase(rri.t.rel());
+
+					if (a.isDontKnow()) {
+						throw new RuntimeException("CE analysis: solver failed - unknown");
+					}
+					if (a.isTrue()) {
 						todo.add(rri);
-					else {
+					} else {
 						l.add(rri.t());
 					}
-					
 				}
 			}
 		}

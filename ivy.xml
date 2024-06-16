@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0">
+    <info organisation="your-organisation" module="your-module"/>
+    <dependencies>
+        <!-- JavaSMT dependency -->
+        <dependency org="org.sosy_lab" name="java-smt" rev="3.7.0"/>
+        <!-- Other dependencies can be added here -->
+    </dependencies>
+</ivy-module>

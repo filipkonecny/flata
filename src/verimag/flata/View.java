@@ -16,8 +16,8 @@ import verimag.flata.presburger.CompositeRel;
 public class View {
 
 	public static void main(String[] args) throws IOException {
-		
-		CR.launchYices();
+
+		CR.initFLataJavaSMT();
 		
 		//quick fix
 		CompositeRel.onlyLin = true;
@@ -36,8 +36,6 @@ public class View {
 		boolean printT = (args.length<=2 || !args[2].equals("false"));
 		
 		view(ca, args[1], printT);
-		
-		CR.terminateYices();
 		
 	}	
 	

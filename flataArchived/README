@@ -1,0 +1,39 @@
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU Lesser General Public License as published
+//    by the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+To run FLATA, the following is required:
+  1. JAVA version 1.6.0 or later 
+  2. yices SMT solver has to be installed; http://yices.csl.sri.com/download.shtml
+  3. GLPK Java has to be installed in LD_LIBRARY_PATH (required for termination analysis only); http://glpk-java.sourceforge.net/
+
+
+For non-recursive integer programs, FLATA implements semi-algorithms for reachability and termination analysis. The reachability semi-algorithm checks if an execution leading to an error control state exists. The termination semi-algorithm computes a termination precondition. Examples:
+  Reachability analysis, correct program:
+    ./flata-reachability.sh benchmarks-reach/VHDL/synlifo.correct.nts
+  Reachability analysis, incorrect program:
+    ./flata-reachability.sh benchmarks-reach/L2CA/listcounter.error.nts
+  Termination analysis:
+    ./flata-termination.sh benchmarks-term/anubhav.correct.nts 
+
+For recursive integer programs, FLATA implements a semi-algorithm that computes a summary of a given program. Example:
+  ./flata-reachability.sh benchmarks-recur/mccarthy.nts
+
+For more information, see http://nts.imag.fr/index.php/Flata
+
+Contact:
+  Filip Konecny, filip.konecny@epfl.ch
+  Marius Bozga, Marius.Bozga@imag.fr
+  Radu Iosif, Radu.Iosif@imag.fr
+  Tomas Vojnar, vojnar@fit.vutbr.cz
+

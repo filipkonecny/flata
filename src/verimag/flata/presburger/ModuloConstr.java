@@ -2,6 +2,10 @@ package verimag.flata.presburger;
 
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
+
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 
 
@@ -151,28 +155,23 @@ public class ModuloConstr implements Constr {
 	public String toString() {
 		return ""+modulus+"|"+LinearTerm.toSBtermList(constr.values());
 	}
-	
-	public void toSBYicesListPart(IndentedWriter iw, boolean negate, String s_u, String s_p) {
+
+	public LinkedList<BooleanFormula> toJSMTListPart(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p) {
+		IntegerFormula constraint = constr.toJSMT(fjsmt, s_u, s_p);
 		
+		LinkedList<BooleanFormula> formulas = new LinkedList<>();
+
 		if (!negate) {
-			iw.writeln("(exists ("+param_name+"::int)");
-			iw.indentInc();
-			{
-				iw.writeln("(="+" "+constr.toSBYices(s_u,s_p)+"(* "+modulus+" "+param_name+")"+")");
-			}
-			iw.indentDec();
-			iw.writeln(")");
+			BooleanFormula formulaMod = fjsmt.getIfm().modularCongruence(constraint, fjsmt.getIfm().makeNumber(0), modulus);
+			formulas.add(formulaMod);
 		} else {
-			for (int i=1; i<modulus; i++) {
-				iw.writeln("(exists ("+param_name+"::int)");
-				iw.indentInc();
-				{
-					iw.writeln("(="+" "+constr.toSBYices(s_u,s_p)+"(+ (* "+modulus+" "+param_name+")"+" "+i+"))");
-				}
-				iw.indentDec();
-				iw.writeln(")");
+			for (int i = 1; i < modulus; i++) {
+				BooleanFormula formulaMod = fjsmt.getIfm().modularCongruence(constraint, fjsmt.getIfm().makeNumber(i), modulus);
+				formulas.add(formulaMod);
 			}
 		}
+
+		return formulas;
 	}
 	
 	public Set<Variable> variables() {

@@ -2,9 +2,12 @@ package verimag.flata.presburger;
 
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import verimag.flata.acceleration.zigzag.flataofpca.ZigzagClosure;
 import verimag.flata.acceleration.delta.DeltaClosure;
 import verimag.flata.common.Answer;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 
 public abstract class Relation extends RelationCommon {
@@ -128,13 +131,13 @@ public abstract class Relation extends RelationCommon {
 	public abstract ModuloRel toModuloRel();
 //	public abstract ModExistsRel toModExists();
 	
-	// produces a conjunction of constraints
-	public abstract void toSBYicesAsConj(IndentedWriter aIW);
+// produces a conjunction of constraints
+	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt);
 	// same as above, just no primes are used:
 	//   unprimed variables suffixed with suf_unp
 	//   primed variables suffixed with suf_p
-	public abstract void toSBYicesAsConj(IndentedWriter aIW, String s_u, String s_p);
-	public abstract void toSBYicesList(IndentedWriter iw, boolean negate);
+	public abstract BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p);
+	public abstract LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate);
 	// all referenced variables
 	
 	public abstract boolean tautology();
@@ -403,24 +406,18 @@ public abstract class Relation extends RelationCommon {
 		return ret;
 	}
 	
-	public static void toSBYicesAsDisj(Collection<Relation> col, IndentedWriter iw) {
-
+	public static BooleanFormula toJSMTAsDisj(Collection<Relation> col, FlataJavaSMT fjsmt) {
 		if (col.size() == 1) {
-
-			col.iterator().next().toSBYicesAsConj(iw);
-
+			return col.iterator().next().toJSMTAsConj(fjsmt);
 		} else {
-
-			iw.writeln("(or");
-			iw.indentInc();
+			// Begin OR
+			LinkedList<BooleanFormula> formulasOR = new LinkedList<BooleanFormula>();
 
 			for (Relation t : col) {
-				t.toSBYicesAsConj(iw);
+				formulasOR.add(t.toJSMTAsConj(fjsmt));
 			}
 
-			iw.indentDec();
-			iw.writeln(")");
-
+			return fjsmt.getBfm().or(formulasOR);
 		}
 	}
 	

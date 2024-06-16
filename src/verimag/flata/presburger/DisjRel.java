@@ -1,13 +1,13 @@
 package verimag.flata.presburger;
 
-import java.io.StringWriter;
 import java.util.*;
+
+import org.sosy_lab.java_smt.api.BooleanFormula;
 
 import verimag.flata.Closure;
 import verimag.flata.common.Answer;
 import verimag.flata.common.CR;
-import verimag.flata.common.IndentedWriter;
-import verimag.flata.common.YicesAnswer;
+import verimag.flata.common.FlataJavaSMT;
 import nts.parser.*;
 
 public class DisjRel {
@@ -479,72 +479,45 @@ public class DisjRel {
 			return this.implies(other).and(other.implies(this));
 		}
 	}
+
 	public Answer implies(DisjRel other) {
 		if (this.disjuncts.size() == 0 && other.disjuncts.size() == 0) {
 			return Answer.FALSE;
 		} else if (other.disjuncts.size() > 0 && other.disjuncts.iterator().next().isTrue()) {
 			return Answer.TRUE;
 		} else {
-			StringWriter sw = new StringWriter();
-			IndentedWriter iw = new IndentedWriter(sw);
 
-			iw.writeln("(reset)");
+			FlataJavaSMT fjsmt = CR.flataJavaSMT;
 
-			// define
-			Set<Variable> vars = new HashSet<Variable>();
-			Set<Variable> aux = this.refVarsAsUnp();
-			aux.addAll(other.refVarsAsUnp());
-			for (Variable v : aux) {
-				vars.add(v);
-				vars.add(v.getCounterpart());
-			}
-			CR.yicesDefineVars(iw, vars);
-
-			iw.writeln("(assert");
-			iw.indentInc();
-			
-			iw.writeln("(not (=>");
-			iw.indentInc();
-
-			iw.writeln("(or");
-			iw.indentInc();
-			
+			// Begin NOT Implies
+			// Begin OR1
+			LinkedList<BooleanFormula> formulasOR1 = new LinkedList<>();
 			if (disjuncts.size() == 0) {
-				iw.writeln("false");
+				formulasOR1.add(fjsmt.getBfm().makeFalse());
 			} else {
 				for (CompositeRel r : this.disjuncts) {
-					r.toModuloRel().toSBYicesAsConj(iw);
+					formulasOR1.add(r.toModuloRel().toJSMTAsConj(fjsmt));
 				}
 			}
+			// End OR1
+			BooleanFormula formulaOR1 = fjsmt.getBfm().or(formulasOR1);
 
-			iw.indentDec();
-			iw.writeln(")"); // or
-			iw.writeln("(or");
-			iw.indentInc();
-			
+			// Begin OR2
+			LinkedList<BooleanFormula> formulasOR2 = new LinkedList<>();
 			if (other.disjuncts.size() == 0) {
-				iw.writeln("false");
+				formulasOR2.add(fjsmt.getBfm().makeFalse());
 			} else {
 				for (CompositeRel r : other.disjuncts) {
-					r.toModuloRel().toSBYicesAsConj(iw);
+					formulasOR2.add(r.toModuloRel().toJSMTAsConj(fjsmt));
 				}
 			}
+			// End OR2
+			BooleanFormula formulaOR2 = fjsmt.getBfm().or(formulasOR2);
 
-			iw.indentDec();
-			iw.writeln(")"); // or
+			// End NOT Implies
+			BooleanFormula formula = fjsmt.getBfm().not(fjsmt.getBfm().implication(formulaOR1, formulaOR2));
 
-			iw.indentDec();
-			iw.writeln("))"); // not =>
-
-			iw.indentDec();
-			iw.writeln(")"); // assert
-
-			iw.writeln("(check)");
-
-			StringBuffer yc = new StringBuffer();
-			YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
-			
-			return Answer.createFromYicesUnsat(ya);
+			return fjsmt.isSatisfiable(formula, true);
 		}
 	}
 	

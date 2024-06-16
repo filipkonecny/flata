@@ -40,9 +40,10 @@ public class Main {
 		argsext[1] = "-t-merge-prec";
 		System.arraycopy(args, 0, argsext, 2, args.length);
 		
-		long start = System.currentTimeMillis();
 		File inputFile = CR.processParameters(args);
 		verimag.flata.Main.initActions();
+		
+		long start = System.currentTimeMillis();
 		
 		ResultSIL res = parse(inputFile);
 		boolean checkSAT = res.isCheckSat();

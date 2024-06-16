@@ -1,0 +1,15 @@
+dist/
+bin/
+lib/
+flataProvidedBenchmarks/
+output_differences/
+output_timings/
+output_cactus/
+output_plot/
+initialTests/
+.vscode/
+tmp.txt
+yices
+*.py
+*.txt
+*.png

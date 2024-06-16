@@ -2,9 +2,12 @@ package verimag.flata.presburger;
 
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import verimag.flata.acceleration.delta.DeltaClosure;
 import verimag.flata.common.Answer;
 import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 import verimag.flata.presburger.DBM.DetRes;
 
@@ -629,16 +632,18 @@ public class DBRel extends Relation implements DBOct {
 		return toStringBuf().toString();
 	}
 	
-	public void toSBYicesAsConj(IndentedWriter aIW, String suf_unp, String suf_p) {
-		CR.yicesAndStart(aIW);
-		dbm.toStringBufYicesList_dbc(aIW, suf_unp, suf_p, false, varsOrig);
-		CR.yicesAndEnd(aIW);
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt) {
+		return toJSMTAsConj(fjsmt, null, null);
 	}
-	public void toSBYicesAsConj(IndentedWriter aIW) {
-		toSBYicesAsConj(aIW, null, null);
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		// Begin AND
+		LinkedList<BooleanFormula> formulasAND = dbm.toJSMTList_dbc(fjsmt, false, s_u, s_p, varsOrig);
+		// End AND
+		return fjsmt.getBfm().and(formulasAND);
 	}
-	public void toSBYicesList(IndentedWriter iw, boolean negate) {
-		dbm.toStringBufYicesList_dbc(iw, null, null, negate, varsOrig);
+
+	public LinkedList<BooleanFormula>  toJSMTList(FlataJavaSMT fjsmt, boolean negate) {
+		return dbm.toJSMTList_dbc(fjsmt, false, null, null, varsOrig);
 	}
 	
 	public void refVars(Collection<Variable> aCol) {

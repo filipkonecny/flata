@@ -1,6 +1,9 @@
 package verimag.flata.automata.ca;
 
 import java.util.*;
+
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -1069,50 +1072,27 @@ public class CA extends BaseGraph {
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
 
-	
-	private static YicesAnswer isIncluded(int inx, CATransition[] tt, BitSet bs, Collection<String> vars) {
+	// ? Never used ?
+	private static Answer isIncluded(int inx, CATransition[] tt, BitSet bs, Collection<String> vars) {
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
 
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-		
-		iw.writeln("(reset)");
-		
-		CR.yicesDefineVarNames(iw, vars);
+		// Begin AND & NOR
+		LinkedList<BooleanFormula> formulasNOR = new LinkedList<BooleanFormula>();
 
-		iw.writeln("(assert");
-		iw.indentInc();
-		
-		iw.writeln("(and");
-		iw.indentInc();
-		
-		iw.writeln("(not (or");
-		iw.indentInc();
-		
-		iw.writeln("false");
-		
 		for (int i = 0; i < tt.length; i ++) {
 			if (bs.get(i) || i == inx)
 				continue;
 			
-			tt[i].rel().toSBYicesAsConj(iw);
+			formulasNOR.add(tt[i].rel().toJSMTAsConj(fjsmt));
 		}
-		
-		iw.indentDec(); // not or
-		iw.writeln("))");
-		
-		tt[inx].rel().toSBYicesAsConj(iw);
-		
-		iw.indentDec(); // and
-		iw.writeln(")");
-		
-		iw.indentDec(); // assert
-		iw.writeln(")");
-		
-		iw.writeln("(check)");
-		
-		return CR.isSatisfiableYices(sw.getBuffer(), new StringBuffer());
+
+		// End NOR
+		BooleanFormula formulaNOR = fjsmt.getBfm().not(fjsmt.getBfm().or(formulasNOR));
+		// End AND
+		BooleanFormula formulaAND = fjsmt.getBfm().and(formulaNOR, tt[inx].rel().toJSMTAsConj(fjsmt));
+
+		return fjsmt.isSatisfiable(formulaAND);
 	}
-	
 
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////

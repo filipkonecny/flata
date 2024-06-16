@@ -5,8 +5,10 @@ package verimag.flata.presburger;
 
 import java.util.Collection;
 
-import verimag.flata.common.CR;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
 
+import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 import nts.parser.*;
 
 
@@ -137,31 +139,30 @@ public class LinearTerm implements java.lang.Comparable<LinearTerm> {
 
 		return sb;
 	}
+
 	// if s_u == null, standard priming is used, otherwise, given suffixes are used
-	public StringBuffer toSBYices(String s_u, String s_p) {
-		StringBuffer sb = new StringBuffer();
-		String xx;
+	public IntegerFormula toJSMT(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		String varName;
+
+		IntegerFormula coeffFormula = fjsmt.getIfm().makeNumber(coeff);
+
 		if (variable == null) {
-			//xx = "";
-			sb.append(coeff);
-			return sb;
+			return coeffFormula;
 		} else if (s_u == null) {
-			xx = this.variable.name();
+			varName = this.variable.name();
 		} else {
-			if (variable.isPrimed())
-				xx = variable.getUnprimedName()+s_p;
-			else
-				xx = variable.name()+s_u;
+			if (variable.isPrimed()) {
+				varName = variable.getUnprimedName() + s_p;
+			} else {
+				varName = variable.name() + s_u;
+			}
 		}
-		//String coefStr = (coeff > 0)? ""+coeff : "(- 0 "+Math.abs(coeff)+")";
-		String coefStr = ""+coeff;
-		if (this.variable!=null) {
-			xx = CR.yicesVarName(xx);
-			sb.append("(* ").append(coefStr).append(" ").append(xx).append(")");
+
+		if (this.variable != null) {
+			return fjsmt.getIfm().multiply(coeffFormula, fjsmt.getIfm().makeVariable(varName));
 		} else {
-			sb.append("(* ").append(coefStr).append(" 1)");
+			return fjsmt.getIfm().multiply(coeffFormula, fjsmt.getIfm().makeNumber(1));
 		}
-		return sb;
 	}
 	
 	public static StringBuffer toSBtermList(Collection<LinearTerm> aCol) {
