@@ -598,19 +598,18 @@ public class LinearRel extends Relation {
 		return vars;
 	}
 
-	// TODO: convert ???
-	// public void exportToYices(String aFilename) {
-
-	// 	try {
-	// 		java.io.FileWriter fstream = new java.io.FileWriter(aFilename);
-	// 		java.io.BufferedWriter out = new java.io.BufferedWriter(fstream);
-	// 		out.write(new String(toSBYicesFull()));
-	// 		out.close();
-	// 	} catch (Exception e) {
-	// 		System.err.println("Error: " + e.getMessage());
-	// 		System.exit(-1);
-	// 	}
-	// }
+	// TODO: when is this used? Check validity
+	public void exportToSMT(String aFilename) {
+		try {
+			java.io.FileWriter fstream = new java.io.FileWriter(aFilename);
+			java.io.BufferedWriter out = new java.io.BufferedWriter(fstream);
+			out.write(new String(toJSMTFull().toString()));
+			out.close();
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
+			System.exit(-1);
+		}
+	}
 
 	/**
 	 * removes a term with the specified variable for every linear constraint

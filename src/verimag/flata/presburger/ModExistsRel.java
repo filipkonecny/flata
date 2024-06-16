@@ -229,21 +229,6 @@
 //		return null;
 //	}
 //	@Override
-//	public void toSBYicesAsConj(IndentedWriter aIW) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//	@Override
-//	public void toSBYicesAsConj(IndentedWriter aIW, String sU, String sP) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//	@Override
-//	public void toSBYicesList(IndentedWriter iw, boolean negate) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//	@Override
 //	public void update(ConstProps cps) {
 //		// TODO Auto-generated method stub
 //		

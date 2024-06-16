@@ -6,7 +6,7 @@
 OLD_VERSION_DIR="./flataArchived"
 NEW_VERSION_DIR="./dist"
 
-SOLVERS=("mathsat5" "smtinterpol" "z3" "princess" "cvc4" "yices2")
+SOLVERS=("MATHSAT5" "SMTINTERPOL" "Z3" "PRINCESS" "CVC4" "YICES2")
 
 # Paths to benchmark folders and their corresponding scripts
 declare -A BENCHMARKS_DIRS=(
@@ -18,10 +18,10 @@ declare -A BENCHMARKS_DIRS=(
 
 # Mapping of scripts for different benchmark categories
 declare -A SCRIPTS=(
-    ["reach"]="./flata-reachability.sh"
+    ["reach"]="flata-reachability.sh"
     # ["term"]="./flata-termination.sh"
-    ["sil"]="./flata-sil.sh"
-    ["recur"]="./flata-reachability.sh" # Using the reachability script for recursivity benchmarks
+    ["sil"]="flata-sil.sh"
+    ["recur"]="flata-reachability.sh" # Using the reachability script for recursivity benchmarks
 )
 
 # Output directory for timings
@@ -39,6 +39,19 @@ parse_running_time() {
     fi
 }
 
+# Make sure the chosen solver is actually used in the output
+# looking for: Using solver: YICES2
+parse_chosen_solver() {
+    local output_file="$1"
+    local solver="$2"
+    local chosen_solver=$(grep -Eo "Using solver: $solver" "$output_file")
+    if [ -z "$chosen_solver" ]; then
+        echo "Warning: The chosen solver $solver was not used in the output."
+        #print out the output file for debugging
+        cat "$output_file"
+    fi
+}
+
 # Function to execute a version of the program with timeout and timing
 run_program() {
     local program_dir="$1"
@@ -50,15 +63,21 @@ run_program() {
     local solver="$7"
     local absolute_path=$(realpath "$benchmark")  # Convert to absolute path
 
+    # print the command that will be executed, for debugging
+    # echo "timeout $timeout_duration $program_dir/$script_name $absolute_path -solver $solver > $output_file"
+
     # Temporarily move to program directory to respect relative classpath settings
     pushd "$program_dir" > /dev/null
 
     # Time and execute the script with the absolute path to the benchmark using timeout
-    /usr/bin/time -f "%e" -o "$time_file" timeout "$timeout_duration" "./$script_name" "$absolute_path" -solver "$solver" > "$output_file"
+    /usr/bin/time -f "%e" -o "$time_file" timeout "$timeout_duration" "./$script_name" "$absolute_path" "$solver" > "$output_file"
     local status=$?
 
     # Return to the original directory
     popd > /dev/null
+
+    # Check if the chosen solver is actually used in the output
+    parse_chosen_solver "$new_output" "$solver"
 
     # Check if the process was killed by the timeout
     if [ $status -eq 124 ]; then

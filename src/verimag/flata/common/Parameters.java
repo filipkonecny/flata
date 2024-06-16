@@ -446,7 +446,7 @@ public class Parameters {
 					);
 			clParameters.put( // TODO: print available solvers
 					SOLVER, 
-					new ParameterInfo(true, " solver - choose solver (default: "+ Solvers.YICES2 +")", false, 1)
+					new ParameterInfo(false, " solver - choose solver (default: "+ Solvers.YICES2 +")", false, 1)
 					);
 		}
 		

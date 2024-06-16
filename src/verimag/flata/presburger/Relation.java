@@ -406,27 +406,20 @@ public abstract class Relation extends RelationCommon {
 		return ret;
 	}
 	
-	// TODO: convert
-	// public static void toSBYicesAsDisj(Collection<Relation> col, IndentedWriter iw) {
+	public static BooleanFormula toJSMTAsDisj(Collection<Relation> col, FlataJavaSMT fjsmt) {
+		if (col.size() == 1) {
+			return col.iterator().next().toJSMTAsConj(fjsmt);
+		} else {
+			// Begin OR
+			LinkedList<BooleanFormula> formulasOR = new LinkedList<BooleanFormula>();
 
-	// 	if (col.size() == 1) {
+			for (Relation t : col) {
+				formulasOR.add(t.toJSMTAsConj(fjsmt));
+			}
 
-	// 		col.iterator().next().toSBYicesAsConj(iw);
-
-	// 	} else {
-
-	// 		iw.writeln("(or");
-	// 		iw.indentInc();
-
-	// 		for (Relation t : col) {
-	// 			t.toSBYicesAsConj(iw);
-	// 		}
-
-	// 		iw.indentDec();
-	// 		iw.writeln(")");
-
-	// 	}
-	// }
+			return fjsmt.getBfm().or(formulasOR);
+		}
+	}
 	
 	public static void checkmintype(Relation rel) {
 		Relation min = Relation.toMinType(rel);

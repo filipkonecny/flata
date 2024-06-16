@@ -152,46 +152,6 @@ public class CR {
 		flataJavaSMT = new FlataJavaSMT();
 	}
 	
-	// TODO: remove???
-//   private static String configPath = "./config";
-// 	public static void configure() {
-// 		try {
-// 	    BufferedReader reader = new BufferedReader(new FileReader(configPath));
-
-	    
-// 	    String line = null;
-// 	    while ((line = reader.readLine()) != null) {
-// 		    	Scanner scanner = new Scanner(line);
-// 				scanner.useDelimiter("(\\s|(\\:))+");
-		    
-// 				if (scanner.hasNext()) {
-// 					String key = scanner.next().toLowerCase();
-// 					if (!scanner.hasNext()) {
-// 						System.err.println("Key '"+key+"' found, but value is missing.");
-// 						System.exit(-1);
-// 					} else {
-// 						String value = scanner.next();
-// 						if (key.equals("yices")) {
-// 							CR.yicesCommand = value;
-// 						} else {
-// 							System.err.println("Unknown key '"+key+"' found.");
-// 							System.exit(-1);
-// 						}
-// 					}
-// 				}
-// 				scanner.close();
-// 	    }
-			
-// 	    reader.close();
-//     } catch (FileNotFoundException e) {
-// 	    System.err.println("Configuration file '"+configPath+"' not found");
-// 	    System.exit(-1);
-//     } catch (IOException e) {
-//     	System.err.println("Configuration file '"+configPath+"' could not be closed");
-// 	    System.exit(-1);
-//     }
-// 	}
-	
 	public static void printMemUsage(String msg, boolean forceGC) {
 		System.err.println(msg);
 		System.err.println("Max memory: "+Runtime.getRuntime().maxMemory());
