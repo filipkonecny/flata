@@ -105,7 +105,6 @@
             <zipfileset src="${glpk.jar}" />
             <zipfileset src="${nts.jar}" />
             <zipfileset src="${prestaf.jar}" />
-            <!-- TODO: add whole library? -->
         </jarjar>
     </target>
 

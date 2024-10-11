@@ -1,5 +1,6 @@
 package verimag.flata_backend;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -424,13 +425,27 @@ public class BackEnd implements IAcceleration {
 	}
 	
 	// main method for testing purposes
-	public static void main2(String[] args) {
+	public static void main(String[] args) {
 		
+		File inputFile = CR.processParameters(args);
+
 		verimag.flata.Main.initActions();
 		
+		// InputStream is = null;
+	    // try {
+		// 	is = new FileInputStream(args[0]);
+		// } catch (FileNotFoundException e) {
+		// 	e.printStackTrace();
+		// 	System.err.println(e.getMessage());
+		// 	System.exit(-1);
+		// }
+	    
+	    // ParserListener listen = new ParserListener();
+	    // NTSParser.parseExpr(is, listen);
+	    
 		InputStream is = null;
 	    try {
-			is = new FileInputStream(args[0]);
+			is = new FileInputStream(inputFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.println(e.getMessage());
@@ -438,9 +453,15 @@ public class BackEnd implements IAcceleration {
 		}
 	    
 	    ParserListener listen = new ParserListener();
-	    NTSParser.parseExpr(is, listen);
-	    
-	    List<ILoop> loopList = new LinkedList<ILoop>();
+	    NTSParser.parseNTS(is, listen);
+
+	    List<ILoop> loopList = new LinkedList<ILoop>();	
+		
+		if (listen.retriveResultExpr() == null || listen.retriveResultExpr().getExprList() == null) {
+			System.out.println("No prefix found.");
+			System.exit(1);
+		}
+		
 	    loopList.add(new Loop(listen.retriveResultExpr().getExprList()));
 	    AccelerationInput ai = new AccelerationInput(loopList, listen.retriveResultExpr().getVarTable());
 	    
@@ -457,7 +478,7 @@ public class BackEnd implements IAcceleration {
 	}
 	
 	// main method for testing purposes
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		
 		BackEnd.initActions();
 		
