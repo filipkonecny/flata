@@ -3,6 +3,7 @@
  */
 package verimag.flata.common;
 
+import org.sosy_lab.java_smt.SolverContextFactory.Solvers;
 
 public class ParameterInfo {
 	String help; // help string
@@ -44,6 +45,14 @@ public class ParameterInfo {
 	public boolean checkDirection(String argName) {
 		return argName.equals(DirStrategy.STR_FW) || argName.equals(DirStrategy.STR_BW);
 	}
+	public boolean checkSolver(String argName) {
+		// Check if the argument is a valid solver from enum solvers
+		for (Solvers s : Solvers.values()) {
+			if (s.toString().equals(argName.toUpperCase()))
+				return true;
+		}
+		return false;
+	}
 	public void checkArguments(String argName) {
 		if (argName.equals(Parameters.SCCSTRATEGY)) {
 			if (arguments.length == 0)
@@ -59,7 +68,14 @@ public class ParameterInfo {
 				if (!checkDirection(arguments[0]))
 					Parameters.incorrectArgs();
 			}
-		} 
+		} else if (argName.equals(Parameters.SOLVER)) {
+			if (arguments.length == 0)
+				Parameters.incorrectArgs();
+			else {
+				if (!checkSolver(arguments[0]))
+					Parameters.incorrectArgs();
+			}
+		}
 		
 	}
 }

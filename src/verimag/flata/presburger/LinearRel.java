@@ -6,6 +6,8 @@ import java.util.*;
 import nts.parser.*;
 
 import org.gnu.glpk.*;
+import org.sosy_lab.java_smt.api.BooleanFormula;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
 
 import verimag.flata.common.*;
 
@@ -527,72 +529,48 @@ public class LinearRel extends Relation {
 		return sb;
 	}
 
-	public void toSBYicesList(IndentedWriter iw, String s_u, String s_p) {
-		toSBYicesList(iw, false, s_u, s_p);
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt) {
+		return toJSMTList(fjsmt, false, null, null);
 	}
-	public void toSBYicesList(IndentedWriter iw) {
-		toSBYicesList(iw, false, null, null);
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		return toJSMTList(fjsmt, false, s_u, s_p);
 	}
-	public void toSBYicesList(IndentedWriter iw, boolean negate) {
-		toSBYicesList(iw, negate, null, null);
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate) {
+		return toJSMTList(fjsmt, negate, null, null);
 	}
-	// list constraints without any boolean operator
-	public void toSBYicesList(IndentedWriter iw, boolean negate, String s_u, String s_p) {
+	public LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p) {
+		LinkedList<BooleanFormula> ret = new LinkedList<BooleanFormula>();
 		
 		if (this.simpleContradiction) {
-			iw.writeln("false");
-			return;
+			ret.add(fjsmt.getBfm().makeBoolean(false));
+			return ret;
 		}
-		
-		String rel = (negate) ? ">" : "<=";
 
+		IntegerFormula zero = fjsmt.getIfm().makeNumber(0);
 		for (LinearConstr c : linConstraints_inter) {
-			iw.writeln("(" + rel + " " + c.toSBYices(s_u, s_p) + " 0)");
-		}
-	}
-
-	public StringBuffer toSBYicesFull() {
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-
-		iw.writeln("(reset)");
-
-		Set<Variable> vars = new HashSet<Variable>();
-		for (LinearConstr c : linConstraints_inter)
-			c.variables(vars);
-
-		CR.yicesDefineVars(iw, vars);
-
-		iw.writeln("(assert");
-		iw.indentInc();
-		{
-			toSBYicesAsConj(iw);
+			if (negate) { // >
+				ret.add(fjsmt.getIfm().greaterThan(c.toJSMT(fjsmt, s_u, s_p), zero));
+			} else { // <=
+				ret.add(fjsmt.getIfm().lessOrEquals(c.toJSMT(fjsmt, s_u, s_p), zero));
+			}
 		}
 
-		iw.indentDec();
-		iw.writeln(")");
-		iw.writeln("(check)");
+		return ret;
+	}
 
-		return sw.getBuffer();
+	public BooleanFormula toJSMTFull() {
+		return toJSMTAsConj(CR.flataJavaSMT);
 	}
 	
-	public void toSBYicesAsConj(IndentedWriter aIW) {
-		toSBYicesAsConj(aIW, null, null);
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt) {
+		return toJSMTAsConj(fjsmt, null, null);
 	}
-	public void toSBYicesAsConj(IndentedWriter iw, String s_u, String s_p) {
-		if (this.linConstraints_inter.size() == 0)
-			return;
-
-		iw.writeln("(and");
-		iw.indentInc();
-
-		this.toSBYicesList(iw, s_u, s_p);
-
-		iw.indentDec();
-		iw.writeln(")");
+	public BooleanFormula toJSMTAsConj(FlataJavaSMT fjsmt, String s_u, String s_p) {
+		if (this.linConstraints_inter.size() == 0) {
+			return fjsmt.getBfm().makeTrue();
+		}
+		return fjsmt.getBfm().and(this.toJSMTList(fjsmt, s_u, s_p));
 	}
-	
-	
 	
 	public void refVars(Collection<Variable> aCol) {
 		for (LinearConstr c : linConstraints_inter)
@@ -620,12 +598,12 @@ public class LinearRel extends Relation {
 		return vars;
 	}
 
-	public void exportToYices(String aFilename) {
-
+	// TODO: when is this used? Check validity
+	public void exportToSMT(String aFilename) {
 		try {
 			java.io.FileWriter fstream = new java.io.FileWriter(aFilename);
 			java.io.BufferedWriter out = new java.io.BufferedWriter(fstream);
-			out.write(new String(toSBYicesFull()));
+			out.write(new String(toJSMTFull().toString()));
 			out.close();
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
@@ -2350,46 +2328,22 @@ new_lr = LinearRel.substituteConstants(aLR);
 		return true;
 	}
 
-	private Answer includes_yices(LinearRel other) {
+	private Answer includesJSMT(LinearRel other) {
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
 
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
+		// Begin AND
+		LinkedList<BooleanFormula> formulasAND = other.toJSMTList(fjsmt, false);
 
-		iw.writeln("(reset)");
+		// Begin and end OR
+		BooleanFormula formulaOR = fjsmt.getBfm().or(this.toJSMTList(fjsmt, true));
+		
+		formulasAND.add(formulaOR);
 
-		// define
-		Set<Variable> vars = this.variables();
-		other.refVars(vars);
-		CR.yicesDefineVars(iw, vars);
-
-		iw.writeln("(assert");
-		iw.indentInc();
-
-		// other \subseteq this
-		iw.writeln("(and");
-		iw.indentInc();
-		other.toSBYicesList(iw, false); // not negated
-
-		iw.writeln("(or");
-		iw.indentInc();
-		this.toSBYicesList(iw, true); // negated
-
-		iw.indentDec();
-		iw.writeln(")"); // or
-		iw.indentDec();
-		iw.writeln(")"); // and
-
-		iw.indentDec();
-		iw.writeln(")"); // assert
-
-		iw.writeln("(check)");
-
-		StringBuffer yc = new StringBuffer();
-		YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
+		// End AND
+		BooleanFormula formulaAND = fjsmt.getBfm().and(formulasAND);
 
 		// unsat implies that relation is included
-		return Answer.createFromYicesUnsat(ya);
-		
+		return fjsmt.isSatisfiable(formulaAND, true);
 	}
 	
 	private Answer includes_glpk(LinearRel other) {
@@ -2413,7 +2367,7 @@ new_lr = LinearRel.substituteConstants(aLR);
 			if (INCLUSION_GLPK)
 				return includes_glpk(other);
 			else
-				return includes_yices(other);
+				return includesJSMT(other);
 		}
 	}
 
@@ -2461,8 +2415,7 @@ new_lr = LinearRel.substituteConstants(aLR);
 			
 		} else {
 			
-			StringBuffer yc = new StringBuffer();
-			Answer a = Answer.createFromYicesSat(CR.isSatisfiableYices(this.toSBYicesFull(), yc));
+			Answer a = CR.flataJavaSMT.isSatisfiable(this.toJSMTFull());
 			if (a.isFalse())
 				this.simpleContradiction = true;
 	

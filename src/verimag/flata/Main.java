@@ -15,7 +15,11 @@ import verimag.flata.recur_bounded.SccFinder;
 public class Main {
 
 	public static void initActions() {
-		CR.launchYices();
+		if (Parameters.isOnParameter(Parameters.SOLVER)) {
+			CR.initFLataJavaSMT(Parameters.getParameter(Parameters.SOLVER).arguments()[0]);
+		} else {
+			CR.initFLataJavaSMT();
+		}
 		
 		//if (!CR.RELEASE)
 		if (Parameters.isOnParameter(Parameters.ABSTR_OCT)) {
@@ -27,7 +31,6 @@ public class Main {
 	private static PrintStream out;
 	private static long time_start;
 	public static void finalActions() {
-		CR.terminateYices();
 		
 		Parameters.finalActions();
 		

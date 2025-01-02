@@ -31,20 +31,6 @@ public enum Answer {
 			return FALSE;
 		return DONTKNOW;
 	}
-	public static Answer createFromYicesSat(YicesAnswer satisfiableYices) {
-		switch(satisfiableYices) {
-		case eYicesSAT: return Answer.TRUE;
-		case eYicesUNSAT: return Answer.FALSE;
-		default: return Answer.DONTKNOW;
-		}
-	}
-	public static Answer createFromYicesUnsat(YicesAnswer satisfiableYices) {
-		switch(satisfiableYices) {
-		case eYicesSAT: return Answer.FALSE;
-		case eYicesUNSAT: return Answer.TRUE;
-		default: return Answer.DONTKNOW;
-		}
-	}
 	public Answer negate() {
 		if (this == TRUE)
 			return FALSE;

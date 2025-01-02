@@ -3,13 +3,15 @@ package verimag.flata.automata.ca;
 import java.io.StringWriter;
 import java.util.*;
 
+import org.sosy_lab.java_smt.api.BooleanFormula;
+
 import verimag.flata.automata.*;
 import verimag.flata.common.Answer;
 import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 import verimag.flata.common.Label;
 import verimag.flata.common.Parameters;
-import verimag.flata.common.YicesAnswer;
 import verimag.flata.presburger.*;
 
 public class CATransition extends BaseArc implements java.lang.Comparable<CATransition> {
@@ -557,24 +559,17 @@ public class CATransition extends BaseArc implements java.lang.Comparable<CATran
 		return sb;
 	}
 
-	public static void toSBYicesListPart(Collection<CATransition> col, IndentedWriter iw) {
-
+	public static BooleanFormula toJSMTListPart(FlataJavaSMT fjsmt, Collection<CATransition> col) {
 		if (col.size() == 1) {
-
-			col.iterator().next().labAsRel().toSBYicesAsConj(iw);
-
+			return col.iterator().next().labAsRel().toJSMTAsConj(fjsmt);
 		} else {
-
-			iw.writeln("(or");
-			iw.indentInc();
-
+			// Begin OR
+			LinkedList<BooleanFormula> formulasOR = new LinkedList<>();
 			for (CATransition t : col) {
-				t.labAsRel().toSBYicesAsConj(iw);
+				formulasOR.add(t.labAsRel().toJSMTAsConj(fjsmt));
 			}
-
-			iw.indentDec();
-			iw.writeln(")");
-
+			// End OR
+			return fjsmt.getBfm().or(formulasOR);
 		}
 	}
 
@@ -745,7 +740,7 @@ public class CATransition extends BaseArc implements java.lang.Comparable<CATran
 
 	// not contradictory is not the same as satisfiable
 	// not satisfiable is not the same as contradictory
-	// (since Yices may say unknown)
+	// (since solver may say unknown)
 	public boolean isContradictory() { 
 		return labAsRel().contradictory();
 	}
@@ -944,57 +939,31 @@ public class CATransition extends BaseArc implements java.lang.Comparable<CATran
 		return ret;
 	}
 	
-	
 	public static Answer inclusionCheck(Collection<CATransition> tOld, CATransition tNew) {
 
-		if (tOld.size() == 0)
+		if (tOld.size() == 0) {
 			return Answer.createAnswer(false);
-		
-		StringWriter sw = new StringWriter();
-		IndentedWriter iw = new IndentedWriter(sw);
-
-		iw.writeln("(reset)");
-
-		// define
-		Set<Variable> vars = new HashSet<Variable>();
-		tNew.labAsRel().refVars(vars);
-		for (CATransition t : tOld) {
-			t.labAsRel().refVars(vars);
 		}
-		CR.yicesDefineVars(iw, vars);
 
-		iw.writeln("(assert");
-		iw.indentInc();
+		FlataJavaSMT fjsmt = CR.flataJavaSMT;
 		
-		iw.writeln("(and");
-		iw.indentInc();
-		
+		// Begin AND
 		LinearRel lrnew = tNew.labAsRel().toLinearRel();
-		lrnew.toSBYicesAsConj(iw);
-		
-		iw.writeln("(not (or");
-		iw.indentInc();
-		
+		BooleanFormula formulaAND = lrnew.toJSMTAsConj(fjsmt);
+
+		// Begin NOR
+		LinkedList<BooleanFormula> formulasNOR = new LinkedList<>();
 		for (CATransition t : tOld) {
 			LinearRel lr = t.labAsRel().toLinearRel();
-			lr.toSBYicesAsConj(iw);
+			formulasNOR.add(lr.toJSMTAsConj(fjsmt));
 		}
+		// End NOR
+		BooleanFormula formulaNOR = fjsmt.getBfm().not(fjsmt.getBfm().or(formulasNOR));
 		
-		iw.writeln("))"); // not or
-		iw.indentDec();
-		
-		iw.writeln(")"); // and
-		iw.indentDec();
-		
-		iw.indentDec();
-		iw.writeln(")"); // assert
+		// End AND
+		BooleanFormula formula = fjsmt.getBfm().and(formulaAND, formulaNOR);
 
-		iw.writeln("(check)");
-
-		StringBuffer yc = new StringBuffer();
-		YicesAnswer ya = CR.isSatisfiableYices(sw.getBuffer(), yc);
-
-		return Answer.createFromYicesUnsat(ya);
+		return fjsmt.isSatisfiable(formula);
 	}
 
 	// split to more accelerable transitions 

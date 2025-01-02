@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.StringWriter;
 import java.util.Map;
 
+import org.sosy_lab.java_smt.SolverContextFactory.Solvers;
+
 
 public class Parameters {
 		private static Map<String, ParameterInfo> clParameters; // command line parameters <parameter, parameter_info>
@@ -241,6 +243,8 @@ public class Parameters {
 		public static String OUTPUT_TOTAL_TIME = "-output-time"; // outputs only total running time
 		
 		public static String RECUR_SCC = "-recur-scc";
+
+		public static String SOLVER = "-solver";
 		
 		static {
 			clParameters = new java.util.TreeMap<String, ParameterInfo>();
@@ -439,6 +443,10 @@ public class Parameters {
 			clParameters.put(
 					OUT_STATUS, 
 					new ParameterInfo(true, " filename - ", false, 1)
+					);
+			clParameters.put( // TODO: print available solvers
+					SOLVER, 
+					new ParameterInfo(false, " solver - choose solver (default: "+ Solvers.YICES2 +")", false, 1)
 					);
 		}
 		

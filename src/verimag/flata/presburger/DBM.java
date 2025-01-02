@@ -1,8 +1,13 @@
 package verimag.flata.presburger;
 
 import java.util.*;
+import java.util.function.BiFunction;
+
+import org.sosy_lab.java_smt.api.BooleanFormula;
+import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
 
 import verimag.flata.common.CR;
+import verimag.flata.common.FlataJavaSMT;
 import verimag.flata.common.IndentedWriter;
 
 public class DBM {
@@ -1286,25 +1291,43 @@ public class DBM {
 			return sb;
 		}
 
-		public void toStringBufYices(IndentedWriter iw, String s_u, String s_p, boolean negate) {
-			
-			LinearTerm bndTerm = new LinearTerm(null,bound);
-			
-			String eq = (negate)? "/=" : "=";
-			String leq = (negate)? ">" : "<=";
-			
-			if (lt1 != null && lt2 != null) {
-				iw.writeln("("+(isEq? eq : leq)+" (+ "+lt1.toSBYices(s_u,s_p)+" "+lt2.toSBYices(s_u,s_p)+") "+bndTerm.toSBYices(s_u,s_p)+")");
+		public BooleanFormula toJSMT(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p) {
+			LinearTerm bndTerm = new LinearTerm(null, bound);
+			IntegerFormula bndFormula = bndTerm.toJSMT(fjsmt, s_u, s_p);
+
+			BiFunction<IntegerFormula, IntegerFormula, BooleanFormula> comparisonFunction;
+			if (isEq) {
+				if (negate) {
+					comparisonFunction = (num1, num2) -> fjsmt.getBfm().not(fjsmt.getIfm().equal(num1, num2));
+				} else {
+					comparisonFunction = fjsmt.getIfm()::equal;
+				}
 			} else {
-				StringBuffer tmp = (lt1 == null)? lt2.toSBYices(s_u,s_p) : lt1.toSBYices(s_u,s_p);
-				iw.writeln("("+(isEq? eq : leq)+" "+tmp+" "+bndTerm.toSBYices(s_u,s_p)+")");
+				if (negate) {
+					comparisonFunction = fjsmt.getIfm()::greaterThan;
+				} else {
+					comparisonFunction = fjsmt.getIfm()::lessOrEquals;
+				}
 			}
-			
+
+			if (lt1 != null && lt2 != null) {
+				IntegerFormula lt1Formula = lt1.toJSMT(fjsmt, s_u, s_p);
+				IntegerFormula lt2Formula = lt2.toJSMT(fjsmt, s_u, s_p);
+
+				IntegerFormula sum = fjsmt.getIfm().add(lt1Formula, lt2Formula);
+				return comparisonFunction.apply(sum, bndFormula);
+			} else {
+				IntegerFormula formula = (lt1 == null) ? lt2.toJSMT(fjsmt, s_u, s_p) : lt1.toJSMT(fjsmt, s_u, s_p);
+				return comparisonFunction.apply(formula, bndFormula);
+			}
 		}
-		public static void toStringBufYicesList(IndentedWriter iw, Collection<OctConstrLeqEq> aCol, String suf_unp, String suf_p, boolean negate) {
+
+		public static LinkedList<BooleanFormula> toJSMTList(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p, Collection<OctConstrLeqEq> aCol) {
+			LinkedList<BooleanFormula> formulas = new LinkedList<>();
 			for (OctConstrLeqEq oc : aCol) {
-				oc.toStringBufYices(iw, suf_unp, suf_p, negate);
+				formulas.add(oc.toJSMT(fjsmt, negate, s_u, s_p));
 			}
+			return formulas;
 		}
 	}
 
@@ -1326,16 +1349,16 @@ public class DBM {
 		return OctConstrLeqEq.toStringBuf(col);
 	}
 
-	public void toStringBufYicesList_dbc(IndentedWriter iw, String suf_unp, String suf_p, boolean negate, Variable[] varsOrig) {
-		Collection<OctConstrLeqEq> col;
-		col = dbMat2OctConstrsLeqEq(varsOrig);
-		OctConstrLeqEq.toStringBufYicesList(iw, col, suf_unp, suf_p, negate);
+	public LinkedList<BooleanFormula> toJSMTList_dbc(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p, Variable[] varsOrig) {
+		Collection<OctConstrLeqEq> col = dbMat2OctConstrsLeqEq(varsOrig);
+
+		return OctConstrLeqEq.toJSMTList(fjsmt, negate, s_u, s_p, col);
 	}
 
-	public void toStringBufYicesList_oct(IndentedWriter iw, Variable[] vars, String suf_unp, String suf_p, boolean negate) {
-		Collection<OctConstrLeqEq> col;
-		col = octMat2OctConstrsLeqEq(vars);
-		OctConstrLeqEq.toStringBufYicesList(iw, col, suf_unp, suf_p, negate);
+	public LinkedList<BooleanFormula> toJSMTList_oct(FlataJavaSMT fjsmt, boolean negate, String s_u, String s_p, Variable[] varsOrig) {
+		Collection<OctConstrLeqEq> col = octMat2OctConstrsLeqEq(varsOrig);
+
+		return OctConstrLeqEq.toJSMTList(fjsmt, negate, s_u, s_p, col);
 	}
 
 	private boolean areInverse(Field f1, Field f2) {
